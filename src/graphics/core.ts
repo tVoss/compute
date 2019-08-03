@@ -5,25 +5,23 @@ export interface Point {
     y: number
 }
 
-export interface Drawable {
-    draw(ctx: CanvasRenderingContext2D): void
-}
-
 export abstract class Entity {
     protected _parent?: Group
     protected _localPosition: Point
+    protected _scale: number
 
     constructor() {
         this._localPosition = { x: 0, y: 0 }
+        this._scale = 50
     }
 
-    get globalPosition(): Point {
+    get position(): Point {
         if (!this._parent) {
             return this._localPosition
         }
         return {
-            x: this._localPosition.x + this._parent.globalPosition.x,
-            y: this._localPosition.y + this._parent.globalPosition.y
+            x: this._localPosition.x + this._parent.position.x,
+            y: this._localPosition.y + this._parent.position.y
         }
     }
 
@@ -33,17 +31,18 @@ export abstract class Entity {
     }
 
     removeParent() {
-        const globalPos = this.globalPosition
+        const globalPos = this.position
         this._parent.removeChild(this)
         this._parent = undefined
         this._localPosition = globalPos
     }
 
-    set localPosition(value: Point) {
+    set position(value: Point) {
         this._localPosition.x = value.x
         this._localPosition.y = value.y
     }
 
+    abstract draw(ctx: CanvasRenderingContext2D): void
     abstract cointainsPoint(point: Point, ctx: CanvasRenderingContext2D): boolean
 }
 

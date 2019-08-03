@@ -50,13 +50,3 @@ export class Output {
         this._nextValue = null
     }
 }
-
-export class Wire {
-    readonly in: Input
-    readonly out: Output
-
-    constructor() {
-        this.in = new Input()
-        this.out = new Output(() => this.in.value)
-    }
-}

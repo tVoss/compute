@@ -1,7 +1,7 @@
-import { Entity, Drawable, Point, Group } from './core'
+import { Entity, Point, Group } from './core'
 
-export class Pointer extends Group implements Drawable {
-    private _holding?: Entity & Drawable
+export class Pointer extends Group {
+    private _holding?: Entity
 
     private _cb: (p: Point) => void
 
@@ -9,7 +9,7 @@ export class Pointer extends Group implements Drawable {
         super()
         canvas.onmousemove = e => this.onMouseMove(e)
         canvas.onclick = e => this.onClick(e)
-        this.localPosition = { x: 0, y: 0 }
+        this.position = { x: 0, y: 0 }
         this._cb = cb
     }
 
@@ -20,14 +20,14 @@ export class Pointer extends Group implements Drawable {
         this._holding.draw(ctx)
     }
 
-    set holding(e: Entity & Drawable) {
+    set holding(e: Entity) {
         this._holding = e
         this._holding.parent = this
-        this._holding.localPosition = { x: 0, y: 0 }
+        this._holding.position = { x: 0, y: 0 }
     }
 
     onMouseMove(e: MouseEvent) {
-        this.localPosition = {
+        this.position = {
             x: e.offsetX,
             y: e.offsetY
         }

@@ -1,7 +1,8 @@
 import { OrGate, NotGate, AndGate } from "./circuit/gates";
-import { Output } from "./circuit/core";
-import { AndSprite } from "./graphics/gate-sprites";
+import { Output, Wire } from "./circuit/core";
 import {Pointer} from "./graphics/pointer"
+import { AndSprite } from "./graphics/sprites/and-sprite";
+import { NotSprite } from "./graphics/sprites/not-sprite";
 
 const computeCanvas = <HTMLCanvasElement>document.getElementById('compute')
 const context = computeCanvas.getContext('2d')
@@ -17,17 +18,19 @@ const andGate = new AndGate()
 const orGate = new OrGate()
 const notGate = new NotGate()
 
-context.fillStyle = '#222222'
-context.fillRect(0, 0, 720, 720)
-
-orGate.a.connect(power)
-orGate.b.connect(ground)
-andGate.a.connect(aOutput)
-andGate.b.connect(bOutput)
-notGate.a.connect(andGate.x)
+const powerToOrA = new Wire(power, orGate.a)
+const groundToOrB = new Wire(ground, orGate.b)
+const aToAndA = new Wire(aOutput, andGate.a)
+const bToAndB = new Wire(bOutput, andGate.b)
+const andToNot = new Wire(andGate.x, notGate.a)
 
 const andSprite = new AndSprite(andGate)
-andSprite.localPosition = { x: 250, y: 360 }
+andSprite.position = { x: 250, y: 360 }
+
+const notSprite = new NotSprite(notGate)
+notSprite.position = { x: 400, y: 360 }
+
+const sprites = [andSprite, notSprite]
 
 function tick() {
     console.log('tick')
@@ -53,8 +56,7 @@ function draw() {
     context.fillStyle = '#222222'
     context.fillRect(0, 0, 720, 720)
 
-    andSprite.draw(context)
-    notGate.draw(context, 400, 360)
+    sprites.forEach(s => s.draw(context))
 
     requestAnimationFrame(draw)
 }
@@ -63,10 +65,12 @@ requestAnimationFrame(draw)
 const goBtn = document.getElementById('go')
 goBtn.onclick = tick
 
+
 const pointer = new Pointer(computeCanvas, p => {
-    console.log(`${p.x},${p.y}`)
-    console.log(andSprite.cointainsPoint(p, context) ? 'in' : 'out')
-    if (andSprite.cointainsPoint(p, context)) {
-        pointer.holding = andSprite
+    for (let i = 0; i < sprites.length; i++) {
+        if (sprites[i].cointainsPoint(p, context)) {
+            pointer.holding = sprites[i]
+            break
+        }
     }
 })
