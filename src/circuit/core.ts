@@ -3,10 +3,24 @@ export type Signal = boolean | null
 export type Input = (value: Signal) => void
 export type Output = () => Signal
 
+export enum ChipType {
+    Source,
+    And,
+    Or,
+    Not,
+    TriState,
+    Nand
+}
+
 export interface Chip {
     readonly name: string
-    readonly inputs: Input[]
-    readonly outputs: Output[]
+    readonly type: ChipType
+}
+
+export namespace Chip {
+    export function anyNulls(...signals: Signal[]) {
+        return signals.filter(s => s === null).length > 0
+    }
 }
 
 export class Wire {

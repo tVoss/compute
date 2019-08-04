@@ -1,5 +1,5 @@
 import { Entity, Point } from "../core";
-import { Chip } from "../../circuit/core";
+import { Chip, Input, Output } from "../../circuit/core";
 
 export abstract class ChipSprite extends Entity {
 
@@ -31,10 +31,12 @@ export abstract class ChipSprite extends Entity {
         }
     }
 
-    abstract makeGateBodyPath(ctx: CanvasRenderingContext2D): void
+    abstract getInputPos(input: Input): Point | null
+    abstract getOutputPos(output: Output): Point | null
+    abstract makeChipBodyPath(ctx: CanvasRenderingContext2D): void
     
     cointainsPoint(point: Point, ctx: CanvasRenderingContext2D): Entity | null {
-        this.makeGateBodyPath(ctx)
+        this.makeChipBodyPath(ctx)
         return ctx.isPointInPath(point.x, point.y) ? this : null
     }
 }

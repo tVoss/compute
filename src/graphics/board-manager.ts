@@ -1,35 +1,114 @@
-import { Input, Output, Signal, Wire, Chip } from "../circuit/core";
+import { Input, Output, Signal, Wire, Chip, ChipType } from "../circuit/core";
 import { Point, Entity, Group } from "./core";
 import { WireSprite } from "./sprites/wire-sprite";
 import { ChipSprite } from "./sprites/chip-sprite";
+import { AndSprite } from "./sprites/and-sprite";
+import { AndGate, NotGate, Source, NandGate } from "../circuit/chips";
+import { NotSprite } from "./sprites/not-sprite";
+import { SourceSprite } from "./sprites/source-sprite";
+import { NandSprite } from "./sprites/nand-sprite";
+
+let xOffset = 100
+let yOffset = 100
+const xStep = 150
+const yStep = 150
+const xMax = 5
+const yMax = 5
+
+let currX = 0
+let currY = 0
 
 export class BoardManager extends Group {
 
     readonly wires: Wire[] = []
     readonly chips: Chip[] = []
 
-    readonly wireSprites: WireSprite[] = []
     readonly chipSprites: ChipSprite[] = []
 
-    public addWire(wire: Wire) {
+    addWire(wire: Wire) {
         this.wires.push(wire)
         const sprite = new WireSprite(this, wire)
-        sprite.parent = this;
+        sprite.setParent(this);
     }
 
-    addChip(chip: Chip) {
+    addChip = (chip: Chip) => {
         this.chips.push(chip)
+        const sprite = this.getChipSprite(chip)
+        if (sprite) {
+            sprite.setParent(this)
+            this.chipSprites.push(sprite)
+        }
     }
 
-    getInputPos(input: Input): Point {
-        return { x: 0, y: 0 }
+    tick = () => {
+        console.log('--- TiCK ---')
+        this.wires.forEach(w => w.read())
+
+        console.log('--- DONE ---')
+        this.wires.forEach(w => w.write())
     }
 
-    getOutputPos(output: Output): Point {
-        return { x: 0, y: 0 }
+    getInputPos = (input: Input) => {
+        for (let i = 0; i < this.chipSprites.length; i++) {
+            const pos = this.chipSprites[i].getInputPos(input)
+            if (pos) {
+                return pos
+            }
+        }
+        return null
     }
 
-    getSignalColor(signal: Signal): string {
+    getOutputPos = (output: Output) => {
+        for (let i = 0; i < this.chipSprites.length; i++) {
+            const pos = this.chipSprites[i].getOutputPos(output)
+            if (pos) {
+                return pos
+            }
+        }
+        return null
+    }
+
+    getSignalColor = (signal: Signal) => {
         return signal === null ? 'gray' : signal ? 'green' : 'red'
+    }
+
+    private getChipSprite(chip: Chip) {
+        let sprite: ChipSprite
+        switch(chip.type) {
+            case ChipType.Source:
+                sprite = new SourceSprite(chip as Source)
+                break
+            case ChipType.And:
+                sprite = new AndSprite(chip as AndGate)
+                break
+            case ChipType.Nand:
+                sprite = new NandSprite(chip as NandGate)
+                break
+            case ChipType.Not:
+                sprite = new NotSprite(chip as NotGate)
+                break
+            default: return null
+        }
+        sprite.position = this.getNextPos()
+
+        return sprite
+    }
+
+    private getNextPos() {
+        const x = currX * xStep + xOffset
+        const y = currY * yStep + yOffset
+
+        currX++
+        if (currX > xMax) {
+            currX = 0
+            currY++
+            if (currY > yMax) {
+                currY = 0
+                xOffset++
+                yOffset++
+            }
+        }
+
+        return { x, y }
     }
 }

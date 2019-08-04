@@ -35,8 +35,12 @@ export abstract class Entity {
             y: this._localPosition.y + this._parent.position.y
         }
     }
+    
+    get parent() {
+        return this._parent
+    }
 
-    set parent(parent: Group) {
+    setParent(parent: Group) {
         if (this._parent) {
             this.removeParent()
         }

@@ -1,12 +1,12 @@
-import { AndGate } from "../../circuit/chips";
+import { NandGate } from "../../circuit/chips";
 import { ChipSprite } from "./chip-sprite";
 import { Input, Output } from "../../circuit/core";
 import { Point } from "../core";
 
-export class AndSprite extends ChipSprite {
-    private _gate: AndGate
+export class NandSprite extends ChipSprite {
+    private _gate: NandGate
 
-    constructor(gate: AndGate) {
+    constructor(gate: NandGate) {
         super()
         this._gate = gate
     }
@@ -16,11 +16,11 @@ export class AndSprite extends ChipSprite {
         const y = this.position.y
 
         ctx.beginPath()
-        ctx.moveTo(x, this.topLeft.y)
+        ctx.moveTo(x - this._scale / 5, this.topLeft.y)
         ctx.lineTo(this.topLeft.x, this.topLeft.y)
         ctx.lineTo(this.bottomLeft.x, this.bottomLeft.y)
-        ctx.lineTo(x, this.bottomLeft.y)
-        ctx.arc(x, y, this._scale, Math.PI * 3 / 2, Math.PI / 2)
+        ctx.lineTo(x - this._scale / 5, this.bottomLeft.y)
+        ctx.arc(x - this._scale / 5, y, this._scale, Math.PI * 3 / 2, Math.PI / 2)
     }
 
     draw(ctx: CanvasRenderingContext2D) {
@@ -31,6 +31,11 @@ export class AndSprite extends ChipSprite {
 
         // Body
         this.makeChipBodyPath(ctx)
+        ctx.stroke()
+
+        // DOT
+        ctx.beginPath()
+        ctx.arc(this.out.x - this._scale / 10, this.out.y, this._scale / 10, 0, Math.PI * 2)
         ctx.stroke()
     }
 

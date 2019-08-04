@@ -1,6 +1,6 @@
 import { ChipSprite } from "./chip-sprite";
 import { NotGate } from "../../circuit/chips";
-import { Output, Signal } from "../../circuit/core";
+import { Output, Signal, Input } from "../../circuit/core";
 
 export class NotSprite extends ChipSprite {
     private _gate: NotGate
@@ -10,7 +10,7 @@ export class NotSprite extends ChipSprite {
         this._gate = gate
     }
 
-    makeGateBodyPath(ctx: CanvasRenderingContext2D) {
+    makeChipBodyPath(ctx: CanvasRenderingContext2D) {
         ctx.beginPath()
         ctx.moveTo(this.topLeft.x, this.topLeft.y)
         ctx.lineTo(this.bottomLeft.x, this.bottomLeft.y)
@@ -25,26 +25,29 @@ export class NotSprite extends ChipSprite {
         ctx.lineWidth = 3
 
         // Body
-        this.makeGateBodyPath(ctx)
+        this.makeChipBodyPath(ctx)
         ctx.stroke()
 
         // DOT
         ctx.beginPath()
         ctx.arc(this.out.x - this._scale / 10, this.out.y, this._scale / 10, 0, Math.PI * 2)
         ctx.stroke()
+    }
 
-        // In
-        ctx.beginPath()
-        ctx.moveTo(this.topLeft.x - this._scale, y)
-        ctx.lineTo(x - this._scale, y)
-        ctx.strokeStyle = this._gate._a ? 'green' : 'red'
-        ctx.stroke()
+    getInputPos(input: Input) {
+        if (this._gate.a === input) {
+            return {
+                x: this.topLeft.x,
+                y: this.position.y
+            }
+        }
+        return null
+    }
 
-        // Output
-        ctx.beginPath()
-        ctx.moveTo(this.out.x, this.out.y)
-        ctx.lineTo(this.output.x, this.output.y)
-        ctx.strokeStyle = this._gate.x() ? 'green' : 'red'
-        ctx.stroke()
+    getOutputPos(output: Output) {
+        if (output === this._gate.x) {
+            return this.out
+        }
+        return null
     }
 }

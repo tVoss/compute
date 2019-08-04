@@ -18,8 +18,15 @@ export class WireSprite extends Entity {
         const input = this._wire.inputs[0]
         const output = this._wire.outputs[0]
 
-        const inPos = this._bm.getInputPos(input)
         const outPos = this._bm.getOutputPos(output)
+        if (!outPos) {
+            return
+        }
+
+        let inPos = this._bm.getInputPos(input)
+        if (!inPos) {
+            inPos = { x: outPos.x + this._scale, y: outPos.y}
+        }
 
         ctx.strokeStyle = this._bm.getSignalColor(this._wire._next)
         ctx.lineWidth = 2
