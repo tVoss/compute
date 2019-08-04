@@ -8,9 +8,25 @@
 
 <body>
     <canvas id="compute" width="720" height="720"></canvas>
-    <button id="go">go</button>
-    <input type="checkbox" id="a">
-    <input type="checkbox" id="b">
+    <div id="controls" class="fill column">
+        <form id="global" class="fill column">
+            <div>
+                <label for="move">Move</label>
+                <input type="radio" name="mode" value="move" id="move">
+            </div>
+            <div>
+                <label for="delete">Delete</label>
+                <input type="radio" name="mode" value="delete" id="delete">
+            </div> 
+        </form>
+        <div id="utility" class="fill">
+            <div>
+                <button id="go">go</button>
+                <input type="checkbox" id="a">
+                <input type="checkbox" id="b">
+            </div>
+        </div>
+    </div>
     <script src="./bundle.js"></script>
 </body>
 

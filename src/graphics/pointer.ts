@@ -1,30 +1,38 @@
 import { Entity, Point, Group } from './core'
+import { BoardManager } from './board-manager';
+
+export enum PointerMode {
+    Move,
+    Holding,
+    Delete
+}
 
 export class Pointer extends Group {
 
     private _oldParent?: Group
-    private _cb: (p: Point) => void
 
-    constructor(canvas: HTMLCanvasElement, cb: (p: Point) => void) {
+    private _mode: PointerMode
+    private _lastMode: PointerMode
+    private readonly _bm: BoardManager
+
+    constructor(canvas: HTMLCanvasElement, bm: BoardManager) {
         super()
         canvas.onmousemove = e => this.onMouseMove(e)
-        canvas.onclick = e => this.onClick(e)
-        this.position = { x: 0, y: 0 }
-        this._cb = cb
+        this._bm = bm
+        this._mode = PointerMode.Move
     }
 
-    get holding() {
+    get heldEntity() {
         return this._children[0]
     }
 
-    draw(ctx: CanvasRenderingContext2D): void {
-        this.holding && this.holding.draw(ctx)
+    setMode(mode: PointerMode) {
+        this._lastMode = this._mode
+        this._mode = mode
     }
 
-    hold(e: Entity) {
-        this._oldParent = e.parent
-        e.setParent(this)
-        e.position = { x: 0, y: 0 }
+    draw(ctx: CanvasRenderingContext2D): void {
+        this.heldEntity && this.heldEntity.draw(ctx)
     }
 
     onMouseMove(e: MouseEvent) {
@@ -34,19 +42,45 @@ export class Pointer extends Group {
         }
     }
 
-    onClick(e: MouseEvent) {
-        const held = this.holding
-        if (held) {
-            held.removeParent()
-            if (this._oldParent) {
-                held.setParent(this._oldParent)
-                this._oldParent = undefined
-            }
-        } else {
-            this._cb({
-                x: e.offsetX,
-                y: e.offsetY
-            })
+    onClick(point: Point, ctx: CanvasRenderingContext2D) {
+        switch(this._mode) {
+            case PointerMode.Move:
+                this.grab(point, ctx)
+                break;
+            case PointerMode.Holding:
+                this.drop();
+                break;
+            case PointerMode.Delete:
+                this.delete(point, ctx);
+                break;
+        }
+    }
+
+    grab(point: Point, ctx: CanvasRenderingContext2D) {
+        const chip = this._bm.cointainsPoint(point, ctx)
+        if (!chip) {
+            return
+        }
+        this._oldParent = chip.parent
+        chip.setParent(this)
+        chip.position = { x: 0, y: 0 }
+        this.setMode(PointerMode.Holding)
+    }
+
+    drop() {
+        const held = this.heldEntity
+        held.removeParent()
+        if (this._oldParent) {
+            held.setParent(this._oldParent)
+            this._oldParent = undefined
+        }
+        this.setMode(this._lastMode)
+    }
+
+    delete(point: Point, ctx: CanvasRenderingContext2D) {
+        const chip = this._bm.cointainsPoint(point, ctx)
+        if (chip) {
+            this._bm.removeChip(chip)
         }
     }
 }

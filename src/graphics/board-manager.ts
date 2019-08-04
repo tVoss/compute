@@ -40,6 +40,14 @@ export class BoardManager extends Group {
         }
     }
 
+    removeChip(chip: Chip) {
+        const idx = this.chips.indexOf(chip)
+        if (idx === -1) {
+            return
+        }
+        // oh boy
+    }
+
     tick = () => {
         console.log('--- TiCK ---')
         this.wires.forEach(w => w.read())

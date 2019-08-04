@@ -1,15 +1,16 @@
+import * as $ from 'jquery'
 import { OrGate, NotGate, AndGate, Source, NandGate } from "./circuit/chips";
 import { Wire } from "./circuit/core";
 import {Pointer} from "./graphics/pointer"
 import { BoardManager } from "./graphics/board-manager";
 
-const computeCanvas = <HTMLCanvasElement>document.getElementById('compute')
+const computeCanvas = $('#compute').get()[0] as HTMLCanvasElement
 const context = computeCanvas.getContext('2d') as CanvasRenderingContext2D
-const aElem = <HTMLInputElement>document.getElementById('a')
-const bElem = <HTMLInputElement>document.getElementById('b')
+const aElem = $('#a')
+const bElem = $('#b')
 
-const aSrc = new Source(() => aElem.checked, 'a')
-const bSrc = new Source(() => bElem.checked, 'b')
+const aSrc = new Source(() => aElem.prop('checked'), 'b')
+const bSrc = new Source(() => bElem.prop('checked'), 'b')
 
 const nandGate = new NandGate('0')
 const orGate = new OrGate('1')
@@ -31,15 +32,14 @@ chips.forEach(c => bm.addChip(c))
 bm.tick()
 
 // Event handling
-const goBtn = document.getElementById('go') as HTMLElement
-goBtn.onclick = () => bm.tick()
-
-const pointer = new Pointer(computeCanvas, p => {
-    const sprite = bm.cointainsPoint(p, context)
-    if (sprite) {
-        pointer.hold(sprite)
-    }
+$('#go').click(bm.tick)
+$('input[name=mode]').change(e => {
+    const input = e.target as HTMLInputElement
+    console.log(input.value)
 })
+
+const pointer = new Pointer(computeCanvas, bm)
+computeCanvas.onclick = e => pointer.onClick({ x: e.offsetX, y:e.offsetY }, context)
 
 const workspace = [bm, pointer]
 
