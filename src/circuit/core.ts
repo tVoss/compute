@@ -1,52 +1,45 @@
-export class Input {
-    private _output: Output | null
+export type Signal = boolean | null
 
-    constructor() {
-        this._output = null
-    }
+export type Input = (value: Signal) => void
+export type Output = () => Signal
 
-    get value() {
-        if (this._output === null) {
-            return false
-        }
-        return this._output.value
-    }
-
-    connect(output: Output) {
-        this._output = output
-    }
-
-    disconnect() {
-        this._output = null
-    }
+export interface Chip {
+    readonly name: string
+    readonly inputs: Input[]
+    readonly outputs: Output[]
 }
 
-export class Output {
-    private _value: boolean
-    private _nextValue: boolean | null
-    private _nextFunc: () => boolean
+export class Wire {
+    readonly name: string
+    readonly inputs: Input[] 
+    readonly outputs: Output[] 
 
-    constructor(nextFunc: () => boolean) {
-        this._value = nextFunc()
-        this._nextValue = null
-        this._nextFunc = nextFunc
+    _next: Signal
+
+    constructor(name: string, outputs?: Output[], inputs?: Input[]) {
+        this.name = name
+        this.outputs = outputs || []
+        this.inputs = inputs || []
     }
 
-    get value() {
-        return this._value
-    }
+    read(): void {
+        const activeSignals = this.outputs
+            .map((o, i) => [i, o()])
+            .filter(s => s[1] !== null)
 
-    generateNext() {
-        this._nextValue = this._nextFunc()
-        return this._nextValue
-    }
-
-    applyNext() {
-        if (this._nextValue === null) {
-            console.error('Tried to apply next without generating it')
-            return
+        if (activeSignals.length > 1) {
+            throw new Error(`Multiple active signals on wire ${this.name}:\n${JSON.stringify(activeSignals)}`)
         }
-        this._value = this._nextValue
-        this._nextValue = null
+        if (activeSignals.length === 1) {
+            this._next = activeSignals[0][1] as unknown as Signal
+        } else {
+            this._next = null
+        }
+
+        console.log(`Wire ${this.name} read value ${this._next}`)
+    }
+
+    write(): void {
+        this.inputs.forEach(i => i(this._next))
     }
 }

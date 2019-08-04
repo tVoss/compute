@@ -1,28 +1,33 @@
-import { OrGate, NotGate, AndGate } from "./circuit/gates";
+import { OrGate, NotGate, AndGate } from "./circuit/chips";
 import { Output, Wire } from "./circuit/core";
 import {Pointer} from "./graphics/pointer"
 import { AndSprite } from "./graphics/sprites/and-sprite";
 import { NotSprite } from "./graphics/sprites/not-sprite";
+import { SourceSprite } from "./graphics/sprites/source-sprite"
 
 const computeCanvas = <HTMLCanvasElement>document.getElementById('compute')
-const context = computeCanvas.getContext('2d')
-const a = <HTMLInputElement>document.getElementById('a')
-const b = <HTMLInputElement>document.getElementById('b')
+const context = computeCanvas.getContext('2d') as CanvasRenderingContext2D
+const aElem = <HTMLInputElement>document.getElementById('a')
+const bElem = <HTMLInputElement>document.getElementById('b')
 
-const aOutput = new Output(() => a.checked)
-const bOutput = new Output(() => b.checked)
-const power = new Output(() => true)
-const ground = new Output(() => false)
+const andGate = new AndGate('0')
+const orGate = new OrGate('1')
+const notGate = new NotGate('2')
 
-const andGate = new AndGate()
-const orGate = new OrGate()
-const notGate = new NotGate()
+const power = new Wire('power', [() => true])
+const ground = new Wire('ground', [() => false])
+const a = new Wire('a', [() => aElem.checked], [andGate.a])
+const b = new Wire('b', [() => bElem.checked], [andGate.b])
 
-const powerToOrA = new Wire(power, orGate.a)
-const groundToOrB = new Wire(ground, orGate.b)
-const aToAndA = new Wire(aOutput, andGate.a)
-const bToAndB = new Wire(bOutput, andGate.b)
-const andToNot = new Wire(andGate.x, notGate.a)
+const andOut = new Wire('and_out', [andGate.x], [notGate.a])
+const notOut = new Wire('not_out', [notGate.x])
+
+const wires = [a, b, andOut, notOut]
+
+const aSprite = new SourceSprite(() => aElem.checked)
+aSprite.position = { x: 100, y: 200 }
+const bSprite = new SourceSprite(() => bElem.checked)
+bSprite.position = { x: 100, y: 400 }
 
 const andSprite = new AndSprite(andGate)
 andSprite.position = { x: 250, y: 360 }
@@ -30,27 +35,16 @@ andSprite.position = { x: 250, y: 360 }
 const notSprite = new NotSprite(notGate)
 notSprite.position = { x: 400, y: 360 }
 
-const sprites = [andSprite, notSprite]
+const sprites = [andSprite, notSprite, aSprite, bSprite]
 
 function tick() {
-    console.log('tick')
+    console.log('--- TiCK ---')
+    wires.forEach(w => w.read())
 
-    console.log('or a: ' + andGate.a.value)
-    console.log('or b: ' + andGate.b.value)
-    console.log('or x: ' + andGate.x.value)
-    console.log('not a: ' + notGate.a.value)
-    console.log('not x: ' + notGate.x.value)
-
-    console.log('or next: ' + andGate.x.generateNext())
-    console.log('not next: ' + notGate.x.generateNext())
-    aOutput.generateNext()
-    bOutput.generateNext()
-
-    aOutput.applyNext()
-    bOutput.applyNext()
-    andGate.x.applyNext()
-    notGate.x.applyNext()
+    console.log('--- DONE ---')
+    wires.forEach(w => w.write())
 }
+tick()
 
 function draw() {
     context.fillStyle = '#222222'
@@ -62,7 +56,7 @@ function draw() {
 }
 requestAnimationFrame(draw)
 
-const goBtn = document.getElementById('go')
+const goBtn = document.getElementById('go') as HTMLElement
 goBtn.onclick = tick
 
 

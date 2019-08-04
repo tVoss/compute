@@ -1,17 +1,7 @@
 import { Entity, Point } from "../core";
-import { Gate } from "../../circuit/gates";
+import { Chip } from "../../circuit/core";
 
-export abstract class GateSprite extends Entity {
-    protected readonly _gate: Gate
-
-    constructor(gate: Gate) {
-        super()
-        this._gate = gate
-    }
-
-    public get gate(): Gate {
-        return this._gate
-    }
+export abstract class ChipSprite extends Entity {
 
     protected get topLeft(): Point {
         return {
@@ -43,8 +33,8 @@ export abstract class GateSprite extends Entity {
 
     abstract makeGateBodyPath(ctx: CanvasRenderingContext2D): void
     
-    cointainsPoint(point: Point, ctx: CanvasRenderingContext2D): boolean {
+    cointainsPoint(point: Point, ctx: CanvasRenderingContext2D): Entity | null {
         this.makeGateBodyPath(ctx)
-        return ctx.isPointInPath(point.x, point.y)
+        return ctx.isPointInPath(point.x, point.y) ? this : null
     }
 }

@@ -5,6 +5,17 @@ export interface Point {
     y: number
 }
 
+export namespace Point {
+    export function dist(a: Point, b: Point) {
+        return Math.sqrt(dist2(a, b))
+    }
+    export function dist2(a: Point, b: Point) {
+        const dx = a.x - b.x
+        const dy = a.y - b.y
+        return dx * dx + dy * dy
+    }
+}
+
 export abstract class Entity {
     protected _parent?: Group
     protected _localPosition: Point
@@ -26,13 +37,16 @@ export abstract class Entity {
     }
 
     set parent(parent: Group) {
+        if (this._parent) {
+            this.removeParent()
+        }
         this._parent = parent
         this._parent.addChild(this)
     }
 
     removeParent() {
         const globalPos = this.position
-        this._parent.removeChild(this)
+        this._parent && this._parent.removeChild(this)
         this._parent = undefined
         this._localPosition = globalPos
     }
@@ -43,7 +57,7 @@ export abstract class Entity {
     }
 
     abstract draw(ctx: CanvasRenderingContext2D): void
-    abstract cointainsPoint(point: Point, ctx: CanvasRenderingContext2D): boolean
+    abstract cointainsPoint(point: Point, ctx: CanvasRenderingContext2D): Entity | null
 }
 
 export abstract class Group extends Entity {
@@ -62,7 +76,17 @@ export abstract class Group extends Entity {
         this._children = this._children.filter(c => c !== entity)
     }
 
+    draw(ctx: CanvasRenderingContext2D) {
+        this._children.forEach(c => c.draw(ctx))
+    }
+
     cointainsPoint(point: Point, ctx: CanvasRenderingContext2D) {
-        return this._children.some(c => c.cointainsPoint(point, ctx))    
+        for (let i = 0; i < this._children.length; i++) {
+            const hit = this._children[i].cointainsPoint(point, ctx)
+            if (hit) {
+                return hit
+            }
+        }
+        return null
     }
 }

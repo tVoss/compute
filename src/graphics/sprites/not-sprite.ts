@@ -1,9 +1,13 @@
-import { GateSprite } from "./gate-sprite";
-import { NotGate } from "../../circuit/gates";
+import { ChipSprite } from "./chip-sprite";
+import { NotGate } from "../../circuit/chips";
+import { Output, Signal } from "../../circuit/core";
 
-export class NotSprite extends GateSprite {
+export class NotSprite extends ChipSprite {
+    private _gate: NotGate
+
     constructor(gate: NotGate) {
-        super(gate)
+        super()
+        this._gate = gate
     }
 
     makeGateBodyPath(ctx: CanvasRenderingContext2D) {
@@ -33,14 +37,14 @@ export class NotSprite extends GateSprite {
         ctx.beginPath()
         ctx.moveTo(this.topLeft.x - this._scale, y)
         ctx.lineTo(x - this._scale, y)
-        ctx.strokeStyle = this._gate.inputs[0].value ? 'green' : 'red'
+        ctx.strokeStyle = this._gate._a ? 'green' : 'red'
         ctx.stroke()
 
         // Output
         ctx.beginPath()
         ctx.moveTo(this.out.x, this.out.y)
         ctx.lineTo(this.output.x, this.output.y)
-        ctx.strokeStyle = this._gate.inputs[1].value ? 'green' : 'red'
+        ctx.strokeStyle = this._gate.x() ? 'green' : 'red'
         ctx.stroke()
     }
 }
