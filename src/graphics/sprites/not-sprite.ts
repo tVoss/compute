@@ -1,16 +1,17 @@
-import { ChipSprite } from "./chip-sprite";
-import { NotGate } from "../../circuit/chips";
-import { Output, Signal, Input } from "../../circuit/core";
+import { ChipSprite, DrawPath } from "./chip-sprite";
+import { NotGate } from "../../chips/gates";
+import { Input } from "../../chips/input";
+import { Output } from "../../chips/output";
 
 export class NotSprite extends ChipSprite {
-    private _gate: NotGate
+    chip: NotGate
 
-    constructor(gate: NotGate) {
+    constructor(chip: NotGate) {
         super()
-        this._gate = gate
+        this.chip = chip
     }
 
-    makeChipBodyPath(ctx: CanvasRenderingContext2D) {
+    makeChipBodyPath(ctx: DrawPath) {
         ctx.beginPath()
         ctx.moveTo(this.topLeft.x, this.topLeft.y)
         ctx.lineTo(this.bottomLeft.x, this.bottomLeft.y)
@@ -35,7 +36,7 @@ export class NotSprite extends ChipSprite {
     }
 
     getInputPos(input: Input) {
-        if (this._gate.a === input) {
+        if (this.chip.a === input) {
             return {
                 x: this.topLeft.x,
                 y: this.position.y
@@ -45,7 +46,7 @@ export class NotSprite extends ChipSprite {
     }
 
     getOutputPos(output: Output) {
-        if (output === this._gate.x) {
+        if (output === this.chip.x) {
             return this.out
         }
         return null

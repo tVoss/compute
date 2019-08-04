@@ -1,7 +1,9 @@
 import { Entity, Point, Group } from './core'
-import { BoardManager } from './board-manager';
+import { Board } from '../board/board';
+import { ButtonSprite } from './sprites/button-sprite';
 
 export enum PointerMode {
+    Pointer,
     Move,
     Holding,
     Delete
@@ -13,13 +15,13 @@ export class Pointer extends Group {
 
     private _mode: PointerMode
     private _lastMode: PointerMode
-    private readonly _bm: BoardManager
+    private readonly _bm: Board
 
-    constructor(canvas: HTMLCanvasElement, bm: BoardManager) {
+    constructor(canvas: HTMLCanvasElement, bm: Board) {
         super()
         canvas.onmousemove = e => this.onMouseMove(e)
         this._bm = bm
-        this._mode = PointerMode.Move
+        this._mode = PointerMode.Pointer
     }
 
     get heldEntity() {
@@ -48,6 +50,9 @@ export class Pointer extends Group {
 
     onClick(point: Point, ctx: CanvasRenderingContext2D) {
         switch(this._mode) {
+            case PointerMode.Pointer:
+                this.click(point, ctx)
+                break;
             case PointerMode.Move:
                 this.grab(point, ctx)
                 break;
@@ -57,6 +62,13 @@ export class Pointer extends Group {
             case PointerMode.Delete:
                 this.delete(point, ctx);
                 break;
+        }
+    }
+
+    click(point: Point, ctx: CanvasRenderingContext2D) {
+        const chip = this._bm.cointainsPoint(point, ctx)
+        if (chip && chip instanceof ButtonSprite) {
+            chip.onPress(point)
         }
     }
 
@@ -84,7 +96,7 @@ export class Pointer extends Group {
     delete(point: Point, ctx: CanvasRenderingContext2D) {
         const chip = this._bm.cointainsPoint(point, ctx)
         if (chip) {
-            this._bm.removeEntity(chip)
+            this._bm.removeChip(chip)
         }
     }
 }

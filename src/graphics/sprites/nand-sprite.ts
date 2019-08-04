@@ -1,17 +1,18 @@
-import { NandGate } from "../../circuit/chips";
-import { ChipSprite } from "./chip-sprite";
-import { Input, Output } from "../../circuit/core";
+import { ChipSprite, DrawPath } from "./chip-sprite";
 import { Point } from "../core";
+import { NandGate } from "../../chips/gates";
+import { Input } from "../../chips/input";
+import { Output } from "../../chips/output";
 
 export class NandSprite extends ChipSprite {
-    private _gate: NandGate
+    chip: NandGate
 
-    constructor(gate: NandGate) {
+    constructor(chip: NandGate) {
         super()
-        this._gate = gate
+        this.chip = chip
     }
 
-    makeChipBodyPath(ctx: CanvasRenderingContext2D) {
+    makeChipBodyPath(ctx: DrawPath) {
         const x = this.position.x
         const y = this.position.y
 
@@ -40,13 +41,13 @@ export class NandSprite extends ChipSprite {
     }
 
     getInputPos(input: Input): Point | null {
-        if (input === this._gate.a) {
+        if (input === this.chip.a) {
             return {
                 x: this.position.x - this._scale,
                 y: this.position.y - this._scale * 2 / 3
             }
         }
-        if (input === this._gate.b) {
+        if (input === this.chip.b) {
             return {
                 x: this.position.x - this._scale,
                 y: this.position.y + this._scale * 2 / 3
@@ -56,7 +57,7 @@ export class NandSprite extends ChipSprite {
     }
 
     getOutputPos(output: Output) {
-        if (output === this._gate.x) {
+        if (output === this.chip.x) {
             return this.out
         }
         return null

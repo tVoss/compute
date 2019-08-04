@@ -1,14 +1,17 @@
-import { Input, Output, Signal, Wire, Chip, ChipType } from "../circuit/core";
-import { Point, Entity, Group } from "./core";
-import { WireSprite } from "./sprites/wire-sprite";
-import { ChipSprite } from "./sprites/chip-sprite";
-import { AndSprite } from "./sprites/and-sprite";
-import { AndGate, NotGate, Source, NandGate } from "../circuit/chips";
-import { NotSprite } from "./sprites/not-sprite";
-import { SourceSprite } from "./sprites/source-sprite";
-import { NandSprite } from "./sprites/nand-sprite";
+import { Signal, Wire } from "../chips/core";
+import { Point, Entity, Group } from "../graphics/core";
+import { WireSprite } from "../graphics/sprites/wire-sprite";
+import { ChipSprite, DrawPath } from "../graphics/sprites/chip-sprite";
+import { AndSprite } from "../graphics/sprites/and-sprite";
+import { AndGate, NotGate, Button, NandGate } from "../chips/gates";
+import { NotSprite } from "../graphics/sprites/not-sprite";
+import { ButtonSprite } from "../graphics/sprites/button-sprite";
+import { NandSprite } from "../graphics/sprites/nand-sprite";
+import { Output } from "../chips/output";
+import { Input } from "../chips/input";
+import { Chip, ChipType } from "../chips/chip";
 
-let xOffset = 100
+let xOffset = 50
 let yOffset = 100
 const xStep = 150
 const yStep = 150
@@ -18,80 +21,78 @@ const yMax = 5
 let currX = 0
 let currY = 0
 
-export class BoardManager extends Group {
-    wires: Wire[] = []
-    chips: Chip[] = []
+export class Board extends Group {
+    private _tickCount = 0
 
     wireSprites: WireSprite[] = []
     chipSprites: ChipSprite[] = []
 
     addWire(wire: Wire) {
-        this.wires.push(wire)
         const sprite = new WireSprite(this, wire)
-        sprite.setParent(this);
+        sprite.setParent(this)
         this.wireSprites.push(sprite)
+        return sprite
     }
 
     addChip = (chip: Chip) => {
-        this.chips.push(chip)
         const sprite = this.getChipSprite(chip)
         if (sprite) {
             sprite.setParent(this)
             this.chipSprites.push(sprite)
+            return sprite
         }
     }
 
-    removeEntity(entity: Entity) {
-        // Only remove entities we own
-        if (entity.parent !== this) {
-            return
-        }
-
-        // Find the chip
-        const chipIdx = this.chipSprites.indexOf(entity as ChipSprite)
-        if (chipIdx === -1) {
-            return
-        }
-        const chip = this.chips[chipIdx]
-
+    removeChip(chipSprite: ChipSprite) {
+        const chip = chipSprite.chip
         // Disconnect input wires
         chip.inputs.forEach(ci => {
-            this.wires.forEach(w => {
-                w.inputs.delete(ci)
+            this.wireSprites.forEach(w => {
+                w.wire.inputs.delete(ci.id)
             })
         })
         // Disconnect output wires
         chip.outputs.forEach(co => {
-            this.wires.forEach(w => {
-                w.outputs.delete(co)
+            this.wireSprites.forEach(w => {
+                w.wire.outputs.delete(co.id)
             })
         })
 
         // Delete chip
-        this.chips = this.chips.filter(c => c.id !== chip.id)
-        this.chipSprites = this.chipSprites.filter(cs => cs !== entity)
-        entity.removeParent()
+        this.chipSprites = this.chipSprites.filter(cs => cs !== chipSprite)
+        chipSprite.removeParent()
 
         // Cleanup wires
-        const deadWires = this.wires.filter(w => w.outputs.size === 0)
+        const deadWires = this.wireSprites.filter(w => w.wire.outputs.size === 0)
         deadWires.forEach(dw => {
-            dw.inputs.forEach(i => i(null))
-            const sprite = this.wireSprites.filter(s => s._wire === dw)[0]
-            if (!sprite) {
-                return
-            }
-            sprite.removeParent()
-            this.wireSprites = this.wireSprites.filter(s => s !== sprite)
-            this.wires = this.wires.filter(w => w !== dw)
+            dw.wire.inputs.forEach(i => i.put(null))
+            dw.removeParent()
+            this.wireSprites = this.wireSprites.filter(s => s !== dw)
         })
     }
 
-    tick = () => {
-        console.log('--- TiCK ---')
-        this.wires.forEach(w => w.read())
+    draw(ctx: CanvasRenderingContext2D): void {
+        this.wireSprites.forEach(w => w.draw(ctx))
+        this.chipSprites.forEach(c => c.draw(ctx))
+    }
 
-        console.log('--- DONE ---')
-        this.wires.forEach(w => w.write())
+    cointainsPoint(point: Point, ctx: CanvasRenderingContext2D) {
+        for (const cs of this.chipSprites) {
+            if (cs.cointainsPoint(point, ctx)) {
+                return cs
+            }
+        }
+        return null
+    }
+
+    tick = () => {
+        console.log(`--- TiCK (${this._tickCount}) ---`)
+        this.wireSprites.forEach(w => w.wire.read())
+
+        console.log(`--- DONE (${this._tickCount}) ---`)
+        this.wireSprites.forEach(w => w.wire.write())
+
+        this._tickCount++
     }
 
     getInputPos = (input: Input) => {
@@ -121,8 +122,8 @@ export class BoardManager extends Group {
     private getChipSprite(chip: Chip) {
         let sprite: ChipSprite
         switch(chip.type) {
-            case ChipType.Source:
-                sprite = new SourceSprite(chip as Source)
+            case ChipType.Button:
+                sprite = new ButtonSprite(chip as Button)
                 break
             case ChipType.And:
                 sprite = new AndSprite(chip as AndGate)
