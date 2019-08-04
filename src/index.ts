@@ -1,7 +1,7 @@
 import * as $ from 'jquery'
 import { OrGate, NotGate, AndGate, Source, NandGate } from "./circuit/chips";
 import { Wire } from "./circuit/core";
-import {Pointer} from "./graphics/pointer"
+import {Pointer, PointerMode} from "./graphics/pointer"
 import { BoardManager } from "./graphics/board-manager";
 
 const computeCanvas = $('#compute').get()[0] as HTMLCanvasElement
@@ -29,17 +29,22 @@ const wires = [a, b, andOut, notOut]
 const bm = new BoardManager()
 wires.forEach(w => bm.addWire(w))
 chips.forEach(c => bm.addChip(c))
-bm.tick()
 
 // Event handling
 $('#go').click(bm.tick)
-$('input[name=mode]').change(e => {
-    const input = e.target as HTMLInputElement
-    console.log(input.value)
-})
 
 const pointer = new Pointer(computeCanvas, bm)
 computeCanvas.onclick = e => pointer.onClick({ x: e.offsetX, y:e.offsetY }, context)
+$('input[name=mode]').change(e => {
+    const input = e.target as HTMLInputElement
+    switch (input.value) {
+        case 'move':
+            pointer.setMode(PointerMode.Move)
+            break
+        case 'delete':
+            pointer.setMode(PointerMode.Delete)
+    }
+})
 
 const workspace = [bm, pointer]
 

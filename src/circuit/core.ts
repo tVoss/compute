@@ -12,9 +12,22 @@ export enum ChipType {
     Nand
 }
 
-export interface Chip {
+export class Chip {
+    private static _nextId = 0
+
+    readonly id: number
     readonly name: string
     readonly type: ChipType
+    readonly inputs: Set<Input>
+    readonly outputs: Set<Output>
+
+    constructor(name: string, type: ChipType) {
+        this.id = Chip._nextId++
+        this.name = 'CHiP - ' + name
+        this.type = type
+        this.inputs = new Set<Input>()
+        this.outputs = new Set<Output>()
+    }
 }
 
 export namespace Chip {
@@ -24,36 +37,44 @@ export namespace Chip {
 }
 
 export class Wire {
-    readonly name: string
-    readonly inputs: Input[] 
-    readonly outputs: Output[] 
+    private static _nextWireId = 0
 
-    _next: Signal
+    readonly id: number
+    readonly name: string
+    readonly inputs: Set<Input> 
+    readonly outputs: Set<Output> 
+
+    _nextSignal: Signal = null
 
     constructor(name: string, outputs?: Output[], inputs?: Input[]) {
         this.name = name
-        this.outputs = outputs || []
-        this.inputs = inputs || []
+        this.inputs = new Set(inputs)
+        this.outputs = new Set(outputs)
+        this.id = Wire._nextWireId++
     }
 
     read(): void {
-        const activeSignals = this.outputs
-            .map((o, i) => [i, o()])
-            .filter(s => s[1] !== null)
+        let activeSignals: Signal[] = []
+        for (let o of this.outputs) {
+            const s = o()
+            if (s !== null) {
+                activeSignals.push(s)
+            }
+        }
 
         if (activeSignals.length > 1) {
             throw new Error(`Multiple active signals on wire ${this.name}:\n${JSON.stringify(activeSignals)}`)
         }
         if (activeSignals.length === 1) {
-            this._next = activeSignals[0][1] as unknown as Signal
+            this._nextSignal = activeSignals[0] as Signal
         } else {
-            this._next = null
+            this._nextSignal = null
         }
 
-        console.log(`Wire ${this.name} read value ${this._next}`)
+        console.log(`Wire ${this.name} read value ${this._nextSignal}`)
     }
 
     write(): void {
-        this.inputs.forEach(i => i(this._next))
+        this.inputs.forEach(i => i(this._nextSignal))
     }
 }

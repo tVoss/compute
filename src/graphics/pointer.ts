@@ -27,6 +27,10 @@ export class Pointer extends Group {
     }
 
     setMode(mode: PointerMode) {
+        if (this.heldEntity) {
+            console.warn('Cannot switch modes while holding entity')
+            return
+        }
         this._lastMode = this._mode
         this._mode = mode
     }
@@ -61,10 +65,10 @@ export class Pointer extends Group {
         if (!chip) {
             return
         }
+        this.setMode(PointerMode.Holding)
         this._oldParent = chip.parent
         chip.setParent(this)
         chip.position = { x: 0, y: 0 }
-        this.setMode(PointerMode.Holding)
     }
 
     drop() {
@@ -80,7 +84,7 @@ export class Pointer extends Group {
     delete(point: Point, ctx: CanvasRenderingContext2D) {
         const chip = this._bm.cointainsPoint(point, ctx)
         if (chip) {
-            this._bm.removeChip(chip)
+            this._bm.removeEntity(chip)
         }
     }
 }

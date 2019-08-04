@@ -3,7 +3,7 @@ import { Wire } from "../../circuit/core";
 import { BoardManager } from "../board-manager";
 
 export class WireSprite extends Entity {
-    private _wire: Wire
+    _wire: Wire
     private _bm: BoardManager
 
 
@@ -15,8 +15,8 @@ export class WireSprite extends Entity {
 
     draw(ctx: CanvasRenderingContext2D): void {
         // just one for now
-        const input = this._wire.inputs[0]
-        const output = this._wire.outputs[0]
+        const input = this._wire.inputs.keys().next().value
+        const output = this._wire.outputs.keys().next().value
 
         const outPos = this._bm.getOutputPos(output)
         if (!outPos) {
@@ -28,7 +28,7 @@ export class WireSprite extends Entity {
             inPos = { x: outPos.x + this._scale, y: outPos.y}
         }
 
-        ctx.strokeStyle = this._bm.getSignalColor(this._wire._next)
+        ctx.strokeStyle = this._bm.getSignalColor(this._wire._nextSignal)
         ctx.lineWidth = 2
 
         ctx.beginPath()

@@ -1,23 +1,16 @@
 import {Input, Output, Signal, Chip, ChipType} from './core'
 
-export class Source implements Chip {
+export class Source extends Chip {
     readonly x: Output
-
-    readonly type = ChipType.Source
-    readonly name: string    
+    
     constructor(x: Output, name: string) {
+        super('SRC - ' + name, ChipType.Source)
         this.x = x
-        this.name = 'SRC - ' + name
+        this.outputs.add(x)
     }
 }
 
-export class AndGate implements Chip {
-    readonly name: string
-    readonly type = ChipType.And
-    constructor(name: string) {
-        this.name = 'AND - ' + name
-    }
-
+export class AndGate extends Chip {
     _a: Signal = null
     _b: Signal = null
     readonly a: Input = (value: Signal) => this._a = value
@@ -28,15 +21,16 @@ export class AndGate implements Chip {
         }
         return this._a && this._b
     }
+
+    constructor(name: string) {
+        super('AND - ' + name, ChipType.And)
+        this.inputs.add(this.a)
+        this.inputs.add(this.b)
+        this.outputs.add(this.x)
+    }
 }
 
-export class OrGate implements Chip {
-    readonly name: string
-    readonly type = ChipType.Or
-    constructor(name: string) {
-        this.name = 'OR - ' + name
-    }
-
+export class OrGate extends Chip {
     _a: Signal = null
     _b: Signal = null
     readonly a: Input = (value: Signal) => this._a = value
@@ -47,31 +41,30 @@ export class OrGate implements Chip {
         }
         return this._a || this._b
     }
+
+    constructor(name: string) {
+        super('OR - ' + name, ChipType.Or)
+        this.inputs.add(this.a)
+        this.inputs.add(this.b)
+        this.outputs.add(this.x)
+    }
 }
 
-export class NotGate implements Chip {
+export class NotGate extends Chip {
     _a: Signal = null
-
     readonly a: Input = (value: Signal) => this._a = value
     readonly x: Output = () => this._a === null ? null : !this._a
 
-    readonly name: string
-    readonly type = ChipType.Not
     constructor(name: string) {
-        this.name = 'NOT - ' + name
+        super('NOT = ' + name, ChipType.Not)
+        this.inputs.add(this.a)
+        this.outputs.add(this.x)
     }
 }
 
-export class NandGate implements Chip {
-    readonly name: string;    
-    readonly type = ChipType.Nand
-    constructor(name: string) {
-        this.name = 'NAND - ' + name
-    }
-
+export class NandGate extends Chip {
     _a: Signal = null
     _b: Signal = null
-
     readonly a = (value: Signal) => this._a = value
     readonly b = (value: Signal) => this._b = value
     readonly x = () => {
@@ -81,22 +74,25 @@ export class NandGate implements Chip {
         return !(this._a && this._b)
     }
 
+    constructor(name: string) {
+        super('NAND - ' + name, ChipType.Nand)
+        this.inputs.add(this.a)
+        this.inputs.add(this.b)
+        this.outputs.add(this.x)
+    }
 }
 
-export class TriState implements Chip {
+export class TriState extends Chip {
     _a: Signal
     _en: Signal
-
     readonly a: Input = (value: Signal) => this._a = value
     readonly en: Input = (value: Signal) => this._en = value
     readonly x: Output = () => this._en ? this._a : null
 
-    readonly inputs = [this.a, this.en]
-    readonly outputs = [this.x]
-    
-    readonly name: string
-    readonly type = ChipType.TriState
     constructor(name: string) {
-        this.name = 'TRI-STATE - ' + name
+        super('TRI - ' + name, ChipType.TriState)
+        this.inputs.add(this.a)
+        this.inputs.add(this.en)
+        this.outputs.add(this.x)
     }
 }

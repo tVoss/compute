@@ -15,7 +15,7 @@ export class SourceSprite extends ChipSprite {
     makeChipBodyPath(ctx: CanvasRenderingContext2D): void {
         const { x, y } = this.position
         ctx.beginPath()
-        ctx.arc(x, y, this._scale, 0, Math.PI * 2)
+        ctx.arc(x, y, this._scale / 2, 0, Math.PI * 2)
     }
 
     draw(ctx: CanvasRenderingContext2D): void {

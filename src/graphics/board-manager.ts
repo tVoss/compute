@@ -19,16 +19,17 @@ let currX = 0
 let currY = 0
 
 export class BoardManager extends Group {
+    wires: Wire[] = []
+    chips: Chip[] = []
 
-    readonly wires: Wire[] = []
-    readonly chips: Chip[] = []
-
-    readonly chipSprites: ChipSprite[] = []
+    wireSprites: WireSprite[] = []
+    chipSprites: ChipSprite[] = []
 
     addWire(wire: Wire) {
         this.wires.push(wire)
         const sprite = new WireSprite(this, wire)
         sprite.setParent(this);
+        this.wireSprites.push(sprite)
     }
 
     addChip = (chip: Chip) => {
@@ -40,12 +41,49 @@ export class BoardManager extends Group {
         }
     }
 
-    removeChip(chip: Chip) {
-        const idx = this.chips.indexOf(chip)
-        if (idx === -1) {
+    removeEntity(entity: Entity) {
+        // Only remove entities we own
+        if (entity.parent !== this) {
             return
         }
-        // oh boy
+
+        // Find the chip
+        const chipIdx = this.chipSprites.indexOf(entity as ChipSprite)
+        if (chipIdx === -1) {
+            return
+        }
+        const chip = this.chips[chipIdx]
+
+        // Disconnect input wires
+        chip.inputs.forEach(ci => {
+            this.wires.forEach(w => {
+                w.inputs.delete(ci)
+            })
+        })
+        // Disconnect output wires
+        chip.outputs.forEach(co => {
+            this.wires.forEach(w => {
+                w.outputs.delete(co)
+            })
+        })
+
+        // Delete chip
+        this.chips = this.chips.filter(c => c.id !== chip.id)
+        this.chipSprites = this.chipSprites.filter(cs => cs !== entity)
+        entity.removeParent()
+
+        // Cleanup wires
+        const deadWires = this.wires.filter(w => w.outputs.size === 0)
+        deadWires.forEach(dw => {
+            dw.inputs.forEach(i => i(null))
+            const sprite = this.wireSprites.filter(s => s._wire === dw)[0]
+            if (!sprite) {
+                return
+            }
+            sprite.removeParent()
+            this.wireSprites = this.wireSprites.filter(s => s !== sprite)
+            this.wires = this.wires.filter(w => w !== dw)
+        })
     }
 
     tick = () => {
