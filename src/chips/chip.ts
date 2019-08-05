@@ -8,7 +8,14 @@ export enum ChipType {
     Or,
     Not,
     TriState,
-    Nand
+    Nand,
+    _size
+}
+
+export namespace ChipTypes {
+    export function getAll() {
+        return Array.from(Array(ChipType._size).keys()).map(i => ChipType[i])
+    }
 }
 
 export class Chip {

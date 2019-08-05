@@ -90,38 +90,38 @@ export class BoardStorage {
     }
 
     getInput(id: string, chipMap: Map<string, Chip>) {
-        const keys = id.split('.', 2)
-        if (keys.length !== 2) {
+        const chipId = id.split('.', 1)[0]
+        if (!chipId) {
             console.warn('invalid input id: ' + id)
             return null
         }
-        const chip = chipMap.get(keys[0])
+        const chip = chipMap.get(chipId)
         if (!chip) {
-            console.warn('could not find chip id: ' + keys[0])
+            console.warn('could not find chip id: ' + chipId)
             return null
         }
-        const input = chip.inputs.get(keys[1])
+        const input = chip.inputs.get(id)
         if (!input) {
-            console.warn('could not find input id: ' + keys[1])
+            console.warn('could not find input id: ' + id)
             return null
         }
         return input
     }
 
     getOutput(id: string, chipMap: Map<string, Chip>) {
-        const keys = id.split('.', 2)
-        if (keys.length !== 2) {
+        const chipId = id.split('.', 1)[0]
+        if (!chipId) {
             console.warn('invalid output id: ' + id)
             return null
         }
-        const chip = chipMap.get(keys[0])
+        const chip = chipMap.get(chipId)
         if (!chip) {
-            console.warn('could not find chip id: ' + keys[0])
+            console.warn('could not find chip id: ' + chipId)
             return null
         }
-        const output = chip.outputs.get(keys[1])
+        const output = chip.outputs.get(id)
         if (!output) {
-            console.warn('could not find output id: ' + keys[1])
+            console.warn('could not find output id: ' + id)
             return null
         }
         return output

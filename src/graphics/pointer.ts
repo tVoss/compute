@@ -11,16 +11,16 @@ export enum PointerMode {
 
 export class Pointer extends Group {
 
-    private _oldParent?: Group
+    public board: Board
 
+    private _oldParent?: Group
     private _mode: PointerMode
     private _lastMode: PointerMode
-    private readonly _bm: Board
 
-    constructor(canvas: HTMLCanvasElement, bm: Board) {
+    constructor(canvas: HTMLCanvasElement, board: Board) {
         super()
         canvas.onmousemove = e => this.onMouseMove(e)
-        this._bm = bm
+        this.board = board
         this._mode = PointerMode.Pointer
     }
 
@@ -30,11 +30,11 @@ export class Pointer extends Group {
 
     setMode(mode: PointerMode) {
         if (this.heldEntity) {
-            console.warn('Cannot switch modes while holding entity')
-            return
+            return false
         }
         this._lastMode = this._mode
         this._mode = mode
+        return true
     }
 
     draw(ctx: CanvasRenderingContext2D): void {
@@ -54,7 +54,7 @@ export class Pointer extends Group {
                 this.click(point, ctx)
                 break;
             case PointerMode.Move:
-                this.grab(point, ctx)
+                this.tryGrab(point, ctx)
                 break;
             case PointerMode.Holding:
                 this.drop();
@@ -66,17 +66,20 @@ export class Pointer extends Group {
     }
 
     click(point: Point, ctx: CanvasRenderingContext2D) {
-        const chip = this._bm.cointainsPoint(point, ctx)
+        const chip = this.board.cointainsPoint(point, ctx)
         if (chip && chip instanceof ButtonSprite) {
             chip.onPress(point)
         }
     }
 
-    grab(point: Point, ctx: CanvasRenderingContext2D) {
-        const chip = this._bm.cointainsPoint(point, ctx)
-        if (!chip) {
-            return
+    tryGrab(point: Point, ctx: CanvasRenderingContext2D) {
+        const chip = this.board.cointainsPoint(point, ctx)
+        if (chip) {
+            this.grab(chip)
         }
+    }
+
+    grab(chip: Entity) {
         this.setMode(PointerMode.Holding)
         this._oldParent = chip.parent
         chip.setParent(this)
@@ -94,9 +97,9 @@ export class Pointer extends Group {
     }
 
     delete(point: Point, ctx: CanvasRenderingContext2D) {
-        const chip = this._bm.cointainsPoint(point, ctx)
+        const chip = this.board.cointainsPoint(point, ctx)
         if (chip) {
-            this._bm.removeChip(chip)
+            this.board.removeChip(chip)
         }
     }
 }

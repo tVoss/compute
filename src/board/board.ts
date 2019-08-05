@@ -10,6 +10,7 @@ import { NandSprite } from "../graphics/sprites/nand-sprite";
 import { Output } from "../chips/output";
 import { Input } from "../chips/input";
 import { Chip, ChipType } from "../chips/chip";
+import { EmptyEntity } from '../graphics/empty-entity'
 
 let xOffset = 50
 let yOffset = 100
@@ -36,11 +37,11 @@ export class Board extends Group {
 
     addChip = (chip: Chip) => {
         const sprite = this.getChipSprite(chip)
-        if (sprite) {
-            sprite.setParent(this)
+        sprite.setParent(this)
+        if (sprite instanceof ChipSprite) {
             this.chipSprites.push(sprite)
-            return sprite
         }
+        return sprite
     }
 
     removeChip(chipSprite: ChipSprite) {
@@ -121,7 +122,7 @@ export class Board extends Group {
 
     private getChipSprite(chip: Chip) {
         let sprite: ChipSprite
-        switch(chip.type) {
+        switch (chip.type) {
             case ChipType.Button:
                 sprite = new ButtonSprite(chip as Button)
                 break
@@ -134,7 +135,7 @@ export class Board extends Group {
             case ChipType.Not:
                 sprite = new NotSprite(chip as NotGate)
                 break
-            default: return null
+            default: return new EmptyEntity()
         }
         sprite.position = this.getNextPos()
 
