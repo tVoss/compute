@@ -12,10 +12,12 @@ export class NotSprite extends ChipSprite {
     }
 
     makeChipBodyPath(ctx: DrawPath) {
+        const { x, y } = this.position
+
         ctx.beginPath()
-        ctx.moveTo(this.topLeft.x, this.topLeft.y)
-        ctx.lineTo(this.bottomLeft.x, this.bottomLeft.y)
-        ctx.lineTo(this.out.x - this._scale / 5, this.out.y)
+        ctx.moveTo(x - this._scale, y - this._scale)
+        ctx.lineTo(x - this._scale, y + this._scale)
+        ctx.lineTo(this.position.x + this._scale * 4 / 5, this.position.y)
         ctx.closePath()
     }
 
@@ -31,14 +33,15 @@ export class NotSprite extends ChipSprite {
 
         // DOT
         ctx.beginPath()
-        ctx.arc(this.out.x - this._scale / 10, this.out.y, this._scale / 10, 0, Math.PI * 2)
+        ctx.arc(this.position.x + 9 * this._scale / 10, this.position.y, this._scale / 10, 0, Math.PI * 2)
+        ctx.closePath()
         ctx.stroke()
     }
 
     getInputPos(input: Input) {
         if (this.chip.a === input) {
             return {
-                x: this.topLeft.x,
+                x: this.position.x - this._scale,
                 y: this.position.y
             }
         }
@@ -47,7 +50,10 @@ export class NotSprite extends ChipSprite {
 
     getOutputPos(output: Output) {
         if (output === this.chip.x) {
-            return this.out
+            return {
+                x: this.position.x + this._scale,
+                y: this.position.y
+            }
         }
         return null
     }

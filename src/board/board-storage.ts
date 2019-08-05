@@ -5,6 +5,7 @@ import { AndGate, NandGate, NotGate, OrGate, TriState, Button } from '../chips/g
 import { Chip, ChipType } from '../chips/chip';
 import { Output } from '../chips/output';
 import { Input } from '../chips/input';
+import { ChipFactory } from '../chips/chip-factory';
 
 export class BoardStorage {
 
@@ -34,7 +35,7 @@ export class BoardStorage {
         }
         const boardData = JSON.parse(boardString) as BoardData
         const chips = boardData.chips
-            .map(cd => this.makeChip(cd))
+            .map(cd => ChipFactory.getChip(cd.type, cd.id))
             .filter(c => c !== null) as Chip[]
         const chipMap = new Map(chips.map(c => [c.id, c]))
         const chipDataMap = new Map(boardData.chips.map(c => [c.id, c]))
@@ -52,26 +53,6 @@ export class BoardStorage {
         })
         wires.forEach(w => board.addWire(w))
         return board;
-    }
-
-    makeChip(data: ChipData) {
-        switch (data.type) {
-            case ChipType.And:
-                return new AndGate(data.id)
-            case ChipType.Nand:
-                return new NandGate(data.id)
-            case ChipType.Not:
-                return new NotGate(data.id)
-            case ChipType.Or:
-                return new OrGate(data.id)
-            case ChipType.TriState:
-                return new TriState(data.id)
-            case ChipType.Button:
-                return new Button(data.id)
-            default:
-                console.warn('cannot make chip: ' + data.type)
-                return null
-        }
     }
 
     makeWire(data: WireData, chips: Map<string, Chip>) {

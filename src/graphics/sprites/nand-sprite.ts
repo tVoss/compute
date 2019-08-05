@@ -17,16 +17,15 @@ export class NandSprite extends ChipSprite {
         const y = this.position.y
 
         ctx.beginPath()
-        ctx.moveTo(x - this._scale / 5, this.topLeft.y)
-        ctx.lineTo(this.topLeft.x, this.topLeft.y)
-        ctx.lineTo(this.bottomLeft.x, this.bottomLeft.y)
-        ctx.lineTo(x - this._scale / 5, this.bottomLeft.y)
+        ctx.moveTo(x - this._scale / 5, y + this._scale)
+        ctx.lineTo(x - this._scale, y + this._scale)
+        ctx.lineTo(x - this._scale, y - this._scale)
+        ctx.lineTo(x - this._scale / 5, y - this._scale)
         ctx.arc(x - this._scale / 5, y, this._scale, Math.PI * 3 / 2, Math.PI / 2)
+        ctx.closePath()
     }
 
     draw(ctx: CanvasRenderingContext2D) {
-        const x = this.position.x
-        const y = this.position.y
         ctx.strokeStyle = '#eeeeee'
         ctx.lineWidth = 3
 
@@ -36,7 +35,8 @@ export class NandSprite extends ChipSprite {
 
         // DOT
         ctx.beginPath()
-        ctx.arc(this.out.x - this._scale / 10, this.out.y, this._scale / 10, 0, Math.PI * 2)
+        ctx.arc(this.position.x + 9 * this._scale / 10, this.position.y, this._scale / 10, 0, Math.PI * 2)
+        ctx.closePath()
         ctx.stroke()
     }
 
@@ -58,7 +58,10 @@ export class NandSprite extends ChipSprite {
 
     getOutputPos(output: Output) {
         if (output === this.chip.x) {
-            return this.out
+            return {
+                x: this.position.x + this._scale,
+                y: this.position.y
+            }
         }
         return null
     }

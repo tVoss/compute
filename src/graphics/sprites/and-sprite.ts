@@ -17,16 +17,15 @@ export class AndSprite extends ChipSprite {
         const y = this.position.y
 
         ctx.beginPath()
-        ctx.moveTo(x, this.topLeft.y)
-        ctx.lineTo(this.topLeft.x, this.topLeft.y)
-        ctx.lineTo(this.bottomLeft.x, this.bottomLeft.y)
-        ctx.lineTo(x, this.bottomLeft.y)
+        ctx.moveTo(x, y + this._scale)
+        ctx.lineTo(x - this._scale, y + this._scale)
+        ctx.lineTo(x - this._scale, y - this._scale)
+        ctx.lineTo(x, y - this._scale)
         ctx.arc(x, y, this._scale, Math.PI * 3 / 2, Math.PI / 2)
+        ctx.closePath()
     }
 
     draw(ctx: CanvasRenderingContext2D) {
-        const x = this.position.x
-        const y = this.position.y
         ctx.strokeStyle = '#eeeeee'
         ctx.lineWidth = 3
 
@@ -53,7 +52,7 @@ export class AndSprite extends ChipSprite {
 
     getOutputPos(output: Output) {
         if (output === this.chip.x) {
-            return this.out
+            return { x: this.position.x + this._scale, y: this.position.y }
         }
         return null
     }

@@ -8,38 +8,28 @@ export type DrawPath = CanvasPath & CanvasDrawPath
 export abstract class ChipSprite extends Entity {
     abstract chip: Chip
 
-    protected get topLeft(): Point {
-        return {
-            x: this.position.x - this._scale,
-            y: this.position.y + this._scale
-        }
-    }
-
-    protected get bottomLeft(): Point {
-        return {
-            x: this.position.x - this._scale,
-            y: this.position.y - this._scale
-        }
-    }
-
-    protected get out(): Point {
-        return {
-            x: this.position.x + this._scale, 
-            y: this.position.y
-        }
-    }
-
-    public get output(): Point {
-        return {
-            x: this.out.x + this._scale, 
-            y: this.out.y
-        }
-    }
-
     abstract getInputPos(input: Input): Point | null
     abstract getOutputPos(output: Output): Point | null
     abstract makeChipBodyPath(ctx: DrawPath): void
     
+    tryFindPort(point: Point, radius: number): [Input | Output, Point] | null {
+        for (const input of this.chip.inputs.values()) {
+            const pos = this.getInputPos(input) as Point
+            const hit = Point.dist(point, pos) <= radius
+            if (hit) {
+                return [input, pos]
+            }
+        }
+        for (const output of this.chip.outputs.values()) {
+            const pos = this.getOutputPos(output) as Point
+            const hit = Point.dist(point, pos) <= radius
+            if (hit) {
+                return [output, pos]
+            }
+        }
+        return null
+    }
+
     cointainsPoint(point: Point, ctx: DrawPath): Entity | null {
         this.makeChipBodyPath(ctx)
         return ctx.isPointInPath(point.x, point.y) ? this : null

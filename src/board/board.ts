@@ -3,7 +3,7 @@ import { Point, Entity, Group } from "../graphics/core";
 import { WireSprite } from "../graphics/sprites/wire-sprite";
 import { ChipSprite, DrawPath } from "../graphics/sprites/chip-sprite";
 import { AndSprite } from "../graphics/sprites/and-sprite";
-import { AndGate, NotGate, Button, NandGate } from "../chips/gates";
+import { AndGate, NotGate, Button, NandGate, Sink } from "../chips/gates";
 import { NotSprite } from "../graphics/sprites/not-sprite";
 import { ButtonSprite } from "../graphics/sprites/button-sprite";
 import { NandSprite } from "../graphics/sprites/nand-sprite";
@@ -11,6 +11,7 @@ import { Output } from "../chips/output";
 import { Input } from "../chips/input";
 import { Chip, ChipType } from "../chips/chip";
 import { EmptyEntity } from '../graphics/empty-entity'
+import { SinkSprite } from "../graphics/sprites/sink.sprite";
 
 let xOffset = 50
 let yOffset = 100
@@ -96,6 +97,16 @@ export class Board extends Group {
         this._tickCount++
     }
 
+    tryFindPort(point: Point, radius: number) {
+        for (const chip of this.chipSprites.values()) {
+            const port = chip.tryFindPort(point, radius)
+            if (port) {
+                return port
+            }
+        }
+        return null
+    }
+
     getInputPos = (input: Input) => {
         for (let i = 0; i < this.chipSprites.length; i++) {
             const pos = this.chipSprites[i].getInputPos(input)
@@ -134,6 +145,9 @@ export class Board extends Group {
                 break
             case ChipType.Not:
                 sprite = new NotSprite(chip as NotGate)
+                break
+            case ChipType.Sink:
+                sprite = new SinkSprite(chip as Sink)
                 break
             default: return new EmptyEntity()
         }

@@ -9,6 +9,7 @@ export enum ChipType {
     Not,
     TriState,
     Nand,
+    Sink,
     _size
 }
 

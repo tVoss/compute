@@ -1,5 +1,5 @@
 import * as $ from 'jquery'
-import { Pointer, PointerMode } from "./graphics/pointer"
+import { Pointer, PointerMode, PointerModes } from "./graphics/pointer"
 import { Board } from "./board/board";
 import { BoardStorage } from './board/board-storage';
 import { AndGate } from './chips/gates';
@@ -19,7 +19,7 @@ const computeCanvas = $('#compute').get()[0] as HTMLCanvasElement
 // Setup computer
 Computer.context = computeCanvas.getContext('2d') as CanvasRenderingContext2D
 Computer.storage = new BoardStorage()
-Computer.board = Computer.storage.loadBoard('test')
+Computer.board = new Board()
 Computer.pointer = new Pointer(computeCanvas, Computer.board)
 
 // Event handling
@@ -38,23 +38,38 @@ $('#load').click(() => {
     Computer.board = Computer.storage.loadBoard(name)
     Computer.pointer.board = Computer.board
 })
-$('#go').click(Computer.board.tick)
-$('#compute').click(e => Computer.pointer.onClick({ x: e.offsetX, y: e.offsetY }, Computer.context))
-$('input[name=mode]').change(e => {
-    const input = e.target as HTMLInputElement
-    switch (input.value) {
-        case 'pointer':
-            Computer.pointer.setMode(PointerMode.Pointer)
-            break
-        case 'move':
-            Computer.pointer.setMode(PointerMode.Move)
-            break
-        case 'delete':
-            Computer.pointer.setMode(PointerMode.Delete)
-            break
-    }
+$('#go').click(() => Computer.board.tick())
+const computeElement = $('#compute')
+computeElement.click(e => Computer.pointer.onClick({ x: e.offsetX, y: e.offsetY }, Computer.context))
+computeElement.mousemove(e => Computer.pointer.onMove({ x: e.offsetX, y: e.offsetY }))
+
+// Give radio buttons for all the pointer modes
+const modesDiv = $('#modes')
+PointerModes.getAll().forEach((name, mode: PointerMode) => {
+    const div = $('<div></div>')
+    const label = $('<label></label>')
+    label.attr('for', name)
+    label.text(name)
+    div.append(label)
+
+    const input = $('<input type="radio" name="mode"></input>')
+    input.attr('id', name)
+    input.attr('value', mode)
+    input.change(() => {
+        Computer.pointer.setMode(mode)
+    }) 
+    div.append(input)
+    modesDiv.append(div)
+})
+// Update ui when mode changes
+Computer.pointer.onModeChange.push(m => {
+    $(`input[value=${m}]`).prop('checked', true)
 })
 
+// Set initial mode
+Computer.pointer.setMode(PointerMode.Pointer)
+
+// Create buttons for all the chips
 const chipsDiv = $('#chips')
 ChipTypes.getAll().forEach((name, type: ChipType)  => {
     const btn = $("<button>")
@@ -100,6 +115,7 @@ function update() {
     Computer.board.draw(Computer.context)
     Computer.pointer.draw(Computer.context)
     
+    // Repeat
     requestAnimationFrame(update)
 }
 

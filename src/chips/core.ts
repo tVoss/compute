@@ -1,6 +1,7 @@
 import { Input } from "./input";
 import { Output } from "./output";
 
+export type Port = Input | Output
 export type Signal = boolean | null
 export namespace Signal {
     export function anyNulls(...signals: Signal[]) {

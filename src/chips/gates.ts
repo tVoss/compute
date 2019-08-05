@@ -77,3 +77,10 @@ export class TriState extends Chip {
         super(id, ChipType.TriState)
     }
 }
+
+export class Sink extends Chip {
+    readonly a = this.createInput('a')
+    constructor(id: string) {
+        super(id, ChipType.Sink)
+    }
+}

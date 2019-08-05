@@ -1,12 +1,12 @@
 import { Entity, Point } from "../core";
 import { ChipSprite, DrawPath } from "./chip-sprite";
-import { Button } from "../../chips/gates";
+import { Button, Sink } from "../../chips/gates";
 import { Output } from "../../chips/output";
 import { Input } from "../../chips/input";
 
-export class ButtonSprite extends ChipSprite {
-    chip: Button
-    constructor(source: Button) {
+export class SinkSprite extends ChipSprite {
+    chip: Sink
+    constructor(source: Sink) {
         super()
         this.chip = source
     }
@@ -19,26 +19,19 @@ export class ButtonSprite extends ChipSprite {
     }
 
     draw(ctx: CanvasRenderingContext2D): void {
-        const value = this.chip.x.get()
-        const color = value === null ? 'gray' : value ? 'green' : 'red'
-        ctx.fillStyle = color
-
+        ctx.fillStyle = 'gray'
         this.makeChipBodyPath(ctx)
         ctx.fill()
     }
 
     getInputPos(input: Input): Point | null {
-        return null
-    }
-
-    getOutputPos(output: Output) {
-        if (output === this.chip.x) {
+        if (input === this.chip.a) {
             return this.position
         }
         return null
     }
 
-    onPress(point: Point): void {
-        this.chip.press()
+    getOutputPos(output: Output) {
+        return null
     }
 }
