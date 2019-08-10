@@ -23,7 +23,7 @@ export abstract class Entity {
 
     constructor() {
         this._localPosition = { x: 0, y: 0 }
-        this._scale = 50
+        this._scale = 1
     }
 
     get position(): Point {
@@ -34,6 +34,12 @@ export abstract class Entity {
             x: this._localPosition.x + this._parent.position.x,
             y: this._localPosition.y + this._parent.position.y
         }
+    }
+
+    get scale(): number {
+        return this._parent
+            ? this._parent._scale * this._scale
+            : this._scale
     }
     
     get parent() {

@@ -60,6 +60,7 @@ export class Pointer extends Group {
         canvas.onmousemove = e => this.onMouseMove(e)
         this.board = board
         this._mode = PointerMode.Pointer
+        this._scale = 30
     }
 
     readonly onModeChange: ((mode: PointerMode) => void)[] = []
@@ -209,16 +210,16 @@ export class Pointer extends Group {
         // Create wire
         const wire = new Wire('placed_' + this._nextWireId++)
         if (held.port instanceof Input) {
-            wire.inputs.set(held.port.id, held.port)
-        }
-        if (held.port instanceof Output) {
-            wire.outputs.set(held.port.id, held.port)
+            wire.input = held.port
         }
         if (port instanceof Input) {
-            wire.inputs.set(port.id, port)
+            wire.input = port
+        }
+        if (held.port instanceof Output) {
+            wire.output = held.port
         }
         if (port instanceof Output) {
-            wire.outputs.set(port.id, port)
+            wire.output = port
         }
 
         // Add to board

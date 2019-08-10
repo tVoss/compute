@@ -2,8 +2,8 @@ import { ChipType } from "../chips/chip";
 
 export interface WireData {
     id: string
-    inputs: string[]
-    outputs: string[]
+    input?: string
+    output?: string
     x: number
     y: number
 }

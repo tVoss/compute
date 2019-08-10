@@ -78,9 +78,9 @@ export class TriState extends Chip {
     }
 }
 
-export class Sink extends Chip {
+export class Led extends Chip {
     readonly a = this.createInput('a')
     constructor(id: string) {
-        super(id, ChipType.Sink)
+        super(id, ChipType.Led)
     }
 }

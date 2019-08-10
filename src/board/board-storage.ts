@@ -12,8 +12,8 @@ export class BoardStorage {
     saveBoard(name: string, board: Board) {
         const wires = board.wireSprites.map(ws => ({
             id: ws.wire.id,
-            inputs: [...ws.wire.inputs.keys()],
-            outputs: [...ws.wire.outputs.keys()],
+            input: ws.wire.input && ws.wire.input.id,
+            output: ws.wire.output && ws.wire.output.id,
             x: ws.position.x,
             y: ws.position.y
         }) as WireData)
@@ -56,18 +56,19 @@ export class BoardStorage {
     }
 
     makeWire(data: WireData, chips: Map<string, Chip>) {
-        const outputs = data.outputs
-            .map(wo => this.getOutput(wo, chips))
-            .filter(o => o !== null) as Output[]
-        if (outputs.length === 0) {
-            console.warn('wire ' + data.id + ' has no valid outputs')
+        if (!data.output || !data.input) {
+            console.warn(`wire ${data.id} is missing an input or output`)
             return null
         }
-        const inputs = data.inputs
-            .map(wi => this.getInput(wi, chips))
-            .filter(i => i !== null) as Input[]
+        
+        const output = this.getOutput(data.output, chips)
+        const input = this.getInput(data.input, chips)
+        if (!output || !input) {
+            console.warn(`could not find input or output for wire ${data.id}`)
+            return null
+        }
 
-        return new Wire(data.id, outputs, inputs)
+        return new Wire(data.id, output, input)
     }
 
     getInput(id: string, chipMap: Map<string, Chip>) {

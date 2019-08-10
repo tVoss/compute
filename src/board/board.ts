@@ -3,7 +3,7 @@ import { Point, Entity, Group } from "../graphics/core";
 import { WireSprite } from "../graphics/sprites/wire-sprite";
 import { ChipSprite, DrawPath } from "../graphics/sprites/chip-sprite";
 import { AndSprite } from "../graphics/sprites/and-sprite";
-import { AndGate, NotGate, Button, NandGate, Sink } from "../chips/gates";
+import { AndGate, NotGate, Button, NandGate, Led } from "../chips/gates";
 import { NotSprite } from "../graphics/sprites/not-sprite";
 import { ButtonSprite } from "../graphics/sprites/button-sprite";
 import { NandSprite } from "../graphics/sprites/nand-sprite";
@@ -11,7 +11,7 @@ import { Output } from "../chips/output";
 import { Input } from "../chips/input";
 import { Chip, ChipType } from "../chips/chip";
 import { EmptyEntity } from '../graphics/empty-entity'
-import { SinkSprite } from "../graphics/sprites/sink.sprite";
+import { LedSprite } from "../graphics/sprites/led-sprite";
 
 let xOffset = 50
 let yOffset = 100
@@ -29,6 +29,11 @@ export class Board extends Group {
     wireSprites: WireSprite[] = []
     chipSprites: ChipSprite[] = []
 
+    constructor() {
+        super()
+        this._scale = 25;
+    }
+
     addWire(wire: Wire) {
         const sprite = new WireSprite(this, wire)
         sprite.setParent(this)
@@ -45,32 +50,39 @@ export class Board extends Group {
         return sprite
     }
 
-    removeChip(chipSprite: ChipSprite) {
-        const chip = chipSprite.chip
+    removeChip(removeMe: ChipSprite) {
+        const chip = removeMe.chip
+        const deadWires = [] as WireSprite[]
         // Disconnect input wires
         chip.inputs.forEach(ci => {
             this.wireSprites.forEach(w => {
-                w.wire.inputs.delete(ci.id)
+                if (w.wire.input === ci) {
+                    deadWires.push(w)
+                }
             })
         })
         // Disconnect output wires
         chip.outputs.forEach(co => {
             this.wireSprites.forEach(w => {
-                w.wire.outputs.delete(co.id)
+                if(w.wire.output === co) {
+                    deadWires.push(w)
+                }
             })
         })
 
         // Delete chip
-        this.chipSprites = this.chipSprites.filter(cs => cs !== chipSprite)
-        chipSprite.removeParent()
+        this.chipSprites = this.chipSprites.filter(cs => cs !== removeMe)
+        removeMe.removeParent()
 
         // Cleanup wires
-        const deadWires = this.wireSprites.filter(w => w.wire.outputs.size === 0)
         deadWires.forEach(dw => {
-            dw.wire.inputs.forEach(i => i.put(null))
+            if (dw.wire.input) {
+                dw.wire.input.put(null)
+            }
             dw.removeParent()
             this.wireSprites = this.wireSprites.filter(s => s !== dw)
         })
+        this.wireSprites = this.wireSprites.filter(s => deadWires.indexOf(s) === -1)
     }
 
     draw(ctx: CanvasRenderingContext2D): void {
@@ -146,8 +158,8 @@ export class Board extends Group {
             case ChipType.Not:
                 sprite = new NotSprite(chip as NotGate)
                 break
-            case ChipType.Sink:
-                sprite = new SinkSprite(chip as Sink)
+            case ChipType.Led:
+                sprite = new LedSprite(chip as Led, this)
                 break
             default: return new EmptyEntity()
         }

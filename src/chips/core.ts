@@ -11,6 +11,32 @@ export namespace Signal {
 
 export class Wire {
     readonly id: string
+    public input?: Input
+    public output?: Output
+
+    _nextSignal: Signal = null
+
+    constructor(id: string, output?: Output, input?: Input) {
+        this.id = id
+        this.input = input
+        this.output = output
+    }
+
+    read(): void {
+        if (this.output) {
+            this._nextSignal = this.output.get()
+        }
+    }
+
+    write(): void {
+        if (this.input) {
+            this.input.put(this._nextSignal)
+        }
+    }
+}
+
+export class Bus {
+    readonly id: string
     readonly inputs: Map<string, Input>
     readonly outputs: Map<string, Output> 
 

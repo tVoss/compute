@@ -19,20 +19,20 @@ const computeCanvas = $('#compute').get()[0] as HTMLCanvasElement
 // Setup computer
 Computer.context = computeCanvas.getContext('2d') as CanvasRenderingContext2D
 Computer.storage = new BoardStorage()
-Computer.board = new Board()
+Computer.board = Computer.storage.loadBoard('test2')
 Computer.pointer = new Pointer(computeCanvas, Computer.board)
 
 // Event handling
 $('#save').click(() => {
     const name = prompt('Enter board name')
-    if (name === null) {
+    if (!name) {
         return
     }
     Computer.storage.saveBoard(name, Computer.board)
 })
 $('#load').click(() => {
     const name = prompt('Enter board name')
-    if (name === null) {
+    if (!name) {
         return
     }
     Computer.board = Computer.storage.loadBoard(name)

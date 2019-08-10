@@ -16,34 +16,24 @@ export class WireSprite extends Entity {
     draw(ctx: CanvasRenderingContext2D): void {
         ctx.strokeStyle = this._bm.getSignalColor(this.wire._nextSignal)
         ctx.lineWidth = 2
-        
-        this.wire.outputs.forEach(output => {
-            const outPos = this._bm.getOutputPos(output)
-            if (outPos === null) {
-                console.warn(`Missing output pos for wire ${this.wire.id}`)
-                return
-            }
-            if (this.wire.inputs.size === 0) {
-                const inPos = { x: outPos.x + this._scale, y: outPos.y }
-                ctx.beginPath()
-                ctx.moveTo(inPos.x, inPos.y)
-                ctx.lineTo(outPos.x, outPos.y)
-                ctx.stroke()
-                return 
-            }
-            this.wire.inputs.forEach(input => {
-                let inPos = this._bm.getInputPos(input)
-                if (!inPos) {
-                    console.warn(`Missing input post for wire ${this.wire.id}`)
-                    return
-                }
 
-                ctx.beginPath()
-                ctx.moveTo(inPos.x, inPos.y)
-                ctx.lineTo(outPos.x, outPos.y)
-                ctx.stroke()
-            })
-        })
+        if (!this.wire.input || !this.wire.output) {
+            console.warn(`Wire ${this.wire.id} has no input or output`)
+            return
+        }
+
+        const outPos = this._bm.getOutputPos(this.wire.output)
+        const inPos = this._bm.getInputPos(this.wire.input)
+
+        if (!outPos || !inPos) {
+            console.warn(`Could not get input or output pos for wire ${this.wire.id}`)
+            return
+        }
+
+        ctx.beginPath()
+        ctx.moveTo(inPos.x, inPos.y)
+        ctx.lineTo(outPos.x, outPos.y)
+        ctx.stroke()
     }
 
     cointainsPoint(point: Point, ctx: CanvasRenderingContext2D): Entity | null {
