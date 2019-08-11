@@ -3,8 +3,8 @@ import { Point } from "../graphics/core";
 
 export class DeleteMode implements PointerMode {
     readonly type = PointerModes.Delete   
+    readonly canChange = true
     readonly pointer: Pointer
-
     constructor(pointer: Pointer) {
         this.pointer = pointer
     }

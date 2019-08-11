@@ -1,10 +1,13 @@
 import * as $ from 'jquery'
-import { Pointer, PointerModes } from "./pointer/pointer"
+import { Pointer, PointerModes, PointerMode } from "./pointer/pointer"
 import { Board } from "./board/board";
 import { BoardStorage } from './board/board-storage';
 import { AndGate } from './chips/gates';
 import { ChipType, Chip, ChipTypes } from './chips/chip';
 import {ChipFactory} from './chips/chip-factory'
+import { GrabberMode } from './pointer/grabber-mode';
+import { MoveChipMode } from './pointer/move-chip-mode';
+import { EmptyEntity } from './graphics/empty-entity';
 
 // Main computer
 const Computer = {
@@ -41,11 +44,12 @@ $('#load').click(() => {
 $('#go').click(() => Computer.board.tick())
 const computeElement = $('#compute')
 computeElement.click(e => Computer.pointer.onClick({ x: e.offsetX, y: e.offsetY }, Computer.context))
-computeElement.mousemove(e => Computer.pointer.onMove({ x: e.offsetX, y: e.offsetY }))
+computeElement.mousemove(e => Computer.pointer.onMove({ x: e.offsetX, y: e.offsetY }, Computer.context))
 
 // Give radio buttons for all the pointer modes
 const modesDiv = $('#modes')
-PointerModes.getAll().forEach((name, mode: PointerModes) => {
+PointerModes.getUiModes(Computer.pointer).forEach((mode) => {
+    const name = PointerModes[mode.type]
     const div = $('<div></div>')
     const label = $('<label></label>')
     label.attr('for', name)
@@ -54,7 +58,7 @@ PointerModes.getAll().forEach((name, mode: PointerModes) => {
 
     const input = $('<input type="radio" name="mode"></input>')
     input.attr('id', name)
-    input.attr('value', mode)
+    input.attr('value', name)
     input.change(() => {
         Computer.pointer.setMode(mode)
     }) 
@@ -63,11 +67,11 @@ PointerModes.getAll().forEach((name, mode: PointerModes) => {
 })
 // Update ui when mode changes
 Computer.pointer.onModeChange.push(m => {
-    $(`input[value=${m}]`).prop('checked', true)
+    $(`input[value=${PointerModes[m]}]`).prop('checked', true)
 })
 
 // Set initial mode
-Computer.pointer.setMode(PointerModes.Clicker)
+Computer.pointer.setMode(new GrabberMode(Computer.pointer))
 
 // Create buttons for all the chips
 const chipsDiv = $('#chips')
@@ -80,12 +84,16 @@ ChipTypes.getAll().forEach((name, type: ChipType)  => {
 
     let nextId = 0
     btn.click(() => {
-        if (!Computer.pointer.setMode(PointerModes.Clicker)) {
+        if (!Computer.pointer.mode.canChange) {
             return
         }
         const gate = ChipFactory.getChip(type, name + '_click_' + nextId++)
         const sprite = Computer.board.addChip(gate)
-        Computer.pointer.grab(sprite)
+        if (sprite instanceof EmptyEntity) {
+            console.warn('Added gate returned empty entity: ' + gate.id)
+            return
+        }
+        Computer.pointer.setMode(new MoveChipMode(Computer.pointer, sprite, Computer.pointer.mode))
     })
 
     chipsDiv.append(btn)

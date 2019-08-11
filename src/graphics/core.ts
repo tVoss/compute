@@ -20,10 +20,12 @@ export abstract class Entity {
     protected _parent?: Group
     protected _localPosition: Point
     protected _scale: number
+    protected _zIndex: number
 
     constructor() {
         this._localPosition = { x: 0, y: 0 }
         this._scale = 1
+        this._zIndex = 0
     }
 
     get position(): Point {
@@ -34,6 +36,12 @@ export abstract class Entity {
             x: this._localPosition.x + this._parent.position.x,
             y: this._localPosition.y + this._parent.position.y
         }
+    }
+
+    get zIndex(): number {
+        return this._parent
+            ? this._parent.zIndex + this._zIndex
+            : this._zIndex
     }
 
     get scale(): number {
@@ -91,7 +99,8 @@ export abstract class Group extends Entity {
     }
 
     draw(ctx: CanvasRenderingContext2D) {
-        this._children.forEach(c => c.draw(ctx))
+        const sorted = this._children.sort((a, b) => a.zIndex - b.zIndex)
+        sorted.forEach(e => e.draw(ctx))
     }
 
     cointainsPoint(point: Point, ctx: CanvasRenderingContext2D) {

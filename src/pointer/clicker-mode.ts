@@ -5,6 +5,7 @@ import { ButtonSprite } from "../graphics/sprites/button-sprite";
 export class ClickerMode implements PointerMode {
     readonly type = PointerModes.Clicker  
     readonly pointer: Pointer
+    readonly canChange = true
     constructor(pointer: Pointer) {
         this.pointer = pointer
     }

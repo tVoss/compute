@@ -4,6 +4,7 @@ import { PointerMode, PointerModes, Pointer } from "./pointer";
 import { Output } from "../chips/output";
 import { Input } from "../chips/input";
 import { StartWireMode } from './start-wire-mode'
+import { Highlight } from "./highlight";
 
 class HeldWire extends Entity {
 
@@ -35,9 +36,11 @@ class HeldWire extends Entity {
 export class PlaceWireMode implements PointerMode {
     static _nextWireId = 0
 
-    readonly type = PointerModes.Wire
+    readonly type = PointerModes.PlaceWire
     readonly pointer: Pointer
+    readonly highlight = new Highlight()
     wire: HeldWire
+    canChange = false
 
     constructor(pointer: Pointer, port: Port) {
         this.pointer = pointer
@@ -50,10 +53,17 @@ export class PlaceWireMode implements PointerMode {
     }
 
     onMove(pos: Point): void {
+        const port = this.pointer.board.tryFindPort(pos, 10)
+        if (!port) {
+            this.highlight.removeParent()
+            return
+        }
+        this.highlight.position = port[1]
+        this.highlight.setParent(this.pointer.board)
     }
 
     onClick(point: Point, ctx: CanvasRenderingContext2D): void {
-        const found = this.pointer.board.tryFindPort(point, 5)
+        const found = this.pointer.board.tryFindPort(point, 10)
         if (!found) {
             return
         }
@@ -95,6 +105,8 @@ export class PlaceWireMode implements PointerMode {
         this.wire.removeParent()
 
         const startWire = new StartWireMode(this.pointer)
-        this.pointer.mode = startWire
+
+        this.canChange = true
+        this.pointer.setMode(startWire)
     }
 }

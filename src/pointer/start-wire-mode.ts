@@ -4,16 +4,17 @@ import { Highlight } from './highlight';
 import { PlaceWireMode } from './place-wire-mode'
 
 export class StartWireMode implements PointerMode {
-    readonly type: PointerModes;    
+    readonly type = PointerModes.StartWire    
     readonly pointer: Pointer
     readonly highlight = new Highlight()
+    readonly canChange = true
 
     constructor(pointer: Pointer) {
         this.pointer = pointer
     }
 
     onMove(pos: Point, ctx: CanvasRenderingContext2D): void {
-        const port = this.pointer.board.tryFindPort(pos, 5)
+        const port = this.pointer.board.tryFindPort(pos, 10)
         if (!port) {
             this.highlight.removeParent()
             return
@@ -23,12 +24,12 @@ export class StartWireMode implements PointerMode {
     }
 
     onClick(point: Point, ctx: CanvasRenderingContext2D): void {
-        const port = this.pointer.board.tryFindPort(point, 5)
+        const port = this.pointer.board.tryFindPort(point, 10)
         if (!port) {
             return
         }
         this.highlight.removeParent()
         const placeWire = new PlaceWireMode(this.pointer, port[0])
-        this.pointer.mode = placeWire
+        this.pointer.setMode(placeWire)
     }
 }

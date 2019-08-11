@@ -4,14 +4,13 @@ import { Button, Led } from "../../chips/gates";
 import { Output } from "../../chips/output";
 import { Input } from "../../chips/input";
 import { Board } from "../../board/board";
+import { Signal } from "../../chips/core";
 
 export class LedSprite extends ChipSprite {
     chip: Led
-    board: Board
-    constructor(source: Led, board: Board) {
+    constructor(source: Led) {
         super()
         this.chip = source
-        this.board = board
     }
 
     makeChipBodyPath(ctx: DrawPath): void {
@@ -26,7 +25,7 @@ export class LedSprite extends ChipSprite {
         this.makeChipBodyPath(ctx)
         ctx.fill()
 
-        ctx.fillStyle = this.board.getSignalColor(this.chip.a.sig)
+        ctx.fillStyle = Signal.getColor(this.chip.a.sig)
         ctx.beginPath()
         ctx.arc(this.position.x, this.position.y, this.scale / 4, 0, Math.PI * 2)
         ctx.closePath()

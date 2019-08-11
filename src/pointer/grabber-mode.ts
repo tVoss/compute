@@ -6,22 +6,37 @@ import { ChipSprite } from '../graphics/sprites/chip-sprite';
 export class GrabberMode implements PointerMode {
     readonly type = PointerModes.Grab    
     readonly pointer: Pointer
-    hoverChip: ChipSprite | null
+    readonly canChange = true
+    hoverChip?: ChipSprite
 
     constructor(pointer: Pointer) {
         this.pointer = pointer
-        this.hoverChip = null
+        this.hoverChip = undefined
     }
 
     onMove(pos: Point, ctx: CanvasRenderingContext2D): void {
         const hoverChip = this.pointer.board.cointainsPoint(pos, ctx)
         if (!hoverChip) {
             this.hoverChip && (this.hoverChip.scale = 1)
+            this.hoverChip && this.updateWires(this.hoverChip)
         } else {
             hoverChip.scale = 1.2
+            this.updateWires(hoverChip)
         }
-        this.hoverChip = hoverChip
+        this.hoverChip = hoverChip || undefined
     }
+
+    updateWires(chip: ChipSprite)  {
+        chip.chip.inputs.forEach(i => {
+            const ws = this.pointer.board.findConnectedWire(i)
+            ws && ws.updateNodes()
+        })
+        chip.chip.outputs.forEach(o => {
+            const ws = this.pointer.board.findConnectedWire(o)
+            ws && ws.updateNodes()
+        })
+    }
+
 
     onClick(point: Point, ctx: CanvasRenderingContext2D): void {
         const chip = this.pointer.board.cointainsPoint(point, ctx)
@@ -30,6 +45,6 @@ export class GrabberMode implements PointerMode {
         }
         this.hoverChip && (this.hoverChip.scale = 1)
         const moveChip = new MoveChipMode(this.pointer, chip, this)
-        this.pointer.mode = moveChip
+        this.pointer.setMode(moveChip)
     }
 }

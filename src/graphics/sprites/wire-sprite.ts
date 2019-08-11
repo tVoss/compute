@@ -1,23 +1,24 @@
 import { Entity, Point } from "../core";
-import { Wire } from "../../chips/core";
+import { Wire, Signal } from "../../chips/core";
 import { Board } from "../../board/board";
 
 export class WireSprite extends Entity {
     wire: Wire
-    private _bm: Board
+    private board: Board
 
     private _nodes: Point[] = []
 
     constructor(bm: Board, wire: Wire) {
         super()
         this.wire = wire
-        this._bm = bm
+        this.board = bm
+        this._zIndex = -1
         this.updateNodes()
     }
 
     updateNodes() {
-        const inPos = this._bm.getInputPos(this.wire.input)
-        const outPos = this._bm.getOutputPos(this.wire.output)
+        const inPos = this.board.getInputPos(this.wire.input)
+        const outPos = this.board.getOutputPos(this.wire.output)
         if (!inPos || !outPos) {
             console.warn(`Could not get input or output pos for wire ${this.wire.id}`)
             return
@@ -38,7 +39,7 @@ export class WireSprite extends Entity {
     }
 
     draw(ctx: CanvasRenderingContext2D): void {
-        ctx.strokeStyle = this._bm.getSignalColor(this.wire._nextSignal)
+        ctx.strokeStyle = Signal.getColor(this.wire._nextSignal)
         ctx.lineWidth = 2
 
         if (this._nodes.length === 0) {

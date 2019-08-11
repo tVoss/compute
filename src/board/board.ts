@@ -85,11 +85,6 @@ export class Board extends Group {
         this.wireSprites = this.wireSprites.filter(s => deadWires.indexOf(s) === -1)
     }
 
-    draw(ctx: CanvasRenderingContext2D): void {
-        this.wireSprites.forEach(w => w.draw(ctx))
-        this.chipSprites.forEach(c => c.draw(ctx))
-    }
-
     cointainsPoint(point: Point, ctx: CanvasRenderingContext2D) {
         for (const cs of this.chipSprites) {
             if (cs.cointainsPoint(point, ctx)) {
@@ -174,7 +169,7 @@ export class Board extends Group {
                 sprite = new NotSprite(chip as NotGate)
                 break
             case ChipType.Led:
-                sprite = new LedSprite(chip as Led, this)
+                sprite = new LedSprite(chip as Led)
                 break
             default: return new EmptyEntity()
         }

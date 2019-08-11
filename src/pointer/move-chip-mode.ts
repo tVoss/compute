@@ -9,12 +9,14 @@ export class MoveChipMode implements PointerMode {
     readonly chip: ChipSprite
     readonly oldParent?: Group
     readonly lastMode: PointerMode
+    canChange = false
 
     constructor(pointer: Pointer, chip: ChipSprite, lastMode: PointerMode) {
         this.pointer = pointer
         this.chip = chip
         this.oldParent = chip.parent
         this.lastMode = lastMode
+        chip.position = { x: 0, y: 0 }
         chip.setParent(this.pointer)
     }
 
@@ -34,6 +36,7 @@ export class MoveChipMode implements PointerMode {
         if (this.oldParent) {
             this.chip.setParent(this.oldParent)
         }
-        this.pointer.mode = this.lastMode
+        this.canChange = true
+        this.pointer.setMode(this.lastMode)
     }
 }
