@@ -1,5 +1,5 @@
 import * as $ from 'jquery'
-import { Pointer, PointerMode, PointerModes } from "./graphics/pointer"
+import { Pointer, PointerModes } from "./pointer/pointer"
 import { Board } from "./board/board";
 import { BoardStorage } from './board/board-storage';
 import { AndGate } from './chips/gates';
@@ -20,7 +20,7 @@ const computeCanvas = $('#compute').get()[0] as HTMLCanvasElement
 Computer.context = computeCanvas.getContext('2d') as CanvasRenderingContext2D
 Computer.storage = new BoardStorage()
 Computer.board = Computer.storage.loadBoard('test2')
-Computer.pointer = new Pointer(computeCanvas, Computer.board)
+Computer.pointer = new Pointer(Computer.board)
 
 // Event handling
 $('#save').click(() => {
@@ -45,7 +45,7 @@ computeElement.mousemove(e => Computer.pointer.onMove({ x: e.offsetX, y: e.offse
 
 // Give radio buttons for all the pointer modes
 const modesDiv = $('#modes')
-PointerModes.getAll().forEach((name, mode: PointerMode) => {
+PointerModes.getAll().forEach((name, mode: PointerModes) => {
     const div = $('<div></div>')
     const label = $('<label></label>')
     label.attr('for', name)
@@ -67,7 +67,7 @@ Computer.pointer.onModeChange.push(m => {
 })
 
 // Set initial mode
-Computer.pointer.setMode(PointerMode.Pointer)
+Computer.pointer.setMode(PointerModes.Clicker)
 
 // Create buttons for all the chips
 const chipsDiv = $('#chips')
@@ -80,7 +80,7 @@ ChipTypes.getAll().forEach((name, type: ChipType)  => {
 
     let nextId = 0
     btn.click(() => {
-        if (!Computer.pointer.setMode(PointerMode.Pointer)) {
+        if (!Computer.pointer.setMode(PointerModes.Clicker)) {
             return
         }
         const gate = ChipFactory.getChip(type, name + '_click_' + nextId++)

@@ -7,16 +7,19 @@ export namespace Signal {
     export function anyNulls(...signals: Signal[]) {
         return signals.filter(s => s === null).length > 0
     }
+    export function getColor(signal: Signal) {
+        return signal === null ? 'gray' : signal ? 'green' : 'red'
+    }
 }
 
 export class Wire {
     readonly id: string
-    public input?: Input
-    public output?: Output
+    public input: Input
+    public output: Output
 
     _nextSignal: Signal = null
 
-    constructor(id: string, output?: Output, input?: Input) {
+    constructor(id: string, output: Output, input: Input) {
         this.id = id
         this.input = input
         this.output = output

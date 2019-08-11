@@ -1,4 +1,4 @@
-import { Signal, Wire } from "../chips/core";
+import { Signal, Wire, Port } from "../chips/core";
 import { Point, Entity, Group } from "../graphics/core";
 import { WireSprite } from "../graphics/sprites/wire-sprite";
 import { ChipSprite, DrawPath } from "../graphics/sprites/chip-sprite";
@@ -109,7 +109,7 @@ export class Board extends Group {
         this._tickCount++
     }
 
-    tryFindPort(point: Point, radius: number) {
+    tryFindPort(point: Point, radius: number): [Port, Point] | null {
         for (const chip of this.chipSprites.values()) {
             const port = chip.tryFindPort(point, radius)
             if (port) {
@@ -117,6 +117,25 @@ export class Board extends Group {
             }
         }
         return null
+    }
+
+    findConnectedWire(port: Port) {
+        for (let i = 0; i < this.wireSprites.length; i++) {
+            const ws = this.wireSprites[i]
+            if (ws.wire.input === port || ws.wire.output === port) {
+                return ws
+            }
+        }
+        console.warn('Could not find wire for port: ' + port.id)
+        return null
+    }
+
+    getPortPos(port: Port) {
+        if (port instanceof Input) {
+            return this.getInputPos(port)
+        } else {
+            return this.getOutputPos(port)
+        }
     }
 
     getInputPos = (input: Input) => {
@@ -137,10 +156,6 @@ export class Board extends Group {
             }
         }
         return null
-    }
-
-    getSignalColor = (signal: Signal) => {
-        return signal === null ? 'gray' : signal ? 'green' : 'red'
     }
 
     private getChipSprite(chip: Chip) {

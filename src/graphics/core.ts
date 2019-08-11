@@ -41,6 +41,10 @@ export abstract class Entity {
             ? this._parent._scale * this._scale
             : this._scale
     }
+
+    set scale(scale: number) {
+        this._scale = scale
+    }
     
     get parent() {
         return this._parent
