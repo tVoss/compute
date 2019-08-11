@@ -55,6 +55,7 @@ export class Pointer extends Group {
     constructor(board: Board) {
         super()
         this.board = board
+        this.setParent(board)
         this._scale = 30
         this._mode = new NullMode()
     }

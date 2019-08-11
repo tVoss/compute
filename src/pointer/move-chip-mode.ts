@@ -16,19 +16,14 @@ export class MoveChipMode implements PointerMode {
         this.chip = chip
         this.oldParent = chip.parent
         this.lastMode = lastMode
+        
         chip.position = { x: 0, y: 0 }
         chip.setParent(this.pointer)
+        chip.updateWires(pointer.board)
     }
 
     onMove(pos: Point): void {
-        this.chip.chip.inputs.forEach(i => {
-            const ws = this.pointer.board.findConnectedWire(i)
-            ws && ws.updateNodes()
-        })
-        this.chip.chip.outputs.forEach(o => {
-            const ws = this.pointer.board.findConnectedWire(o)
-            ws && ws.updateNodes()
-        })
+        this.chip.updateWires(this.pointer.board)
     }
 
     onClick(point: Point, ctx: CanvasRenderingContext2D): void {
@@ -40,6 +35,7 @@ export class MoveChipMode implements PointerMode {
         this.chip.removeParent()
         if (this.oldParent) {
             this.chip.setParent(this.oldParent)
+            this.chip.updateWires(this.pointer.board)
         }
     }
 }

@@ -29,10 +29,10 @@ export class Board extends Group {
     private _tickCount = 0
 
     get wireSprites() {
-        return this._children.filter(e => e instanceof WireSprite) as WireSprite[]
+        return this.allChildren.filter(e => e instanceof WireSprite) as WireSprite[]
     }
     get chipSprites() {
-        return this._children.filter(e => e instanceof ChipSprite) as ChipSprite[]
+        return this.allChildren.filter(e => e instanceof ChipSprite) as ChipSprite[]
     }
 
     constructor() {

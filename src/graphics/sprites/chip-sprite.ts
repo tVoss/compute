@@ -8,7 +8,6 @@ export type DrawPath = CanvasPath & CanvasDrawPath
 
 export abstract class ChipSprite extends Entity {
     private _grid = 25
-    protected _orientation = Orientation.Up
 
     abstract chip: Chip
 

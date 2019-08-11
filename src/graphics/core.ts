@@ -123,6 +123,15 @@ export abstract class Group extends Entity {
         this._children = []
     }
 
+    get allChildren(): Entity[] {
+        return [
+            ...this._children,
+            ...this._children
+                .filter(e => e instanceof Group)
+                .flatMap((g: Group) => g.allChildren)
+        ]
+    }
+
     addChild(entity: Entity) {
         this._children.push(entity)
     }
@@ -137,8 +146,9 @@ export abstract class Group extends Entity {
     }
 
     cointainsPoint(point: Point, ctx: CanvasRenderingContext2D) {
-        for (let i = 0; i < this._children.length; i++) {
-            const hit = this._children[i].cointainsPoint(point, ctx)
+        const children = this.allChildren
+        for (let i = 0; i < children.length; i++) {
+            const hit = children[i].cointainsPoint(point, ctx)
             if (hit) {
                 return hit
             }
