@@ -43,8 +43,11 @@ export class GrabberMode implements PointerMode {
         if (!chip) {
             return
         }
-        this.hoverChip && (this.hoverChip.scale = 1)
         const moveChip = new MoveChipMode(this.pointer, chip, this)
         this.pointer.setMode(moveChip)
+    }
+    
+    onRemove(): void {
+        this.hoverChip && (this.hoverChip.scale = 1)
     }
 }

@@ -32,4 +32,8 @@ export class StartWireMode implements PointerMode {
         const placeWire = new PlaceWireMode(this.pointer, port[0])
         this.pointer.setMode(placeWire)
     }
+
+    onRemove() {
+        this.highlight.removeParent()
+    }
 }

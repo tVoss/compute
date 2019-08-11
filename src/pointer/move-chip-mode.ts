@@ -32,11 +32,14 @@ export class MoveChipMode implements PointerMode {
     }
 
     onClick(point: Point, ctx: CanvasRenderingContext2D): void {
+        this.canChange = true
+        this.pointer.setMode(this.lastMode)
+    }
+
+    onRemove(): void {
         this.chip.removeParent()
         if (this.oldParent) {
             this.chip.setParent(this.oldParent)
         }
-        this.canChange = true
-        this.pointer.setMode(this.lastMode)
     }
 }

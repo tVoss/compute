@@ -19,4 +19,7 @@ export class ClickerMode implements PointerMode {
             chip.onPress(point)
         }
     }
+
+    onRemove(): void {
+    }
 }

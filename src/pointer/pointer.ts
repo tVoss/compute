@@ -34,15 +34,15 @@ export interface PointerMode {
     readonly canChange: boolean
     onMove(pos: Point, ctx: CanvasRenderingContext2D): void
     onClick(point: Point, ctx: CanvasRenderingContext2D): void
+    onRemove(): void
 }
 
 class NullMode implements PointerMode {
-    type: PointerModes._size    
+    type: PointerModes._size
     canChange = true
-    onMove(pos: Point, ctx: CanvasRenderingContext2D): void {
-    }
-    onClick(point: Point, ctx: CanvasRenderingContext2D): void {
-    }
+    onMove(pos: Point, ctx: CanvasRenderingContext2D): void { }
+    onClick(point: Point, ctx: CanvasRenderingContext2D): void { }
+    onRemove() { }
 }
 
 export class Pointer extends Group {
@@ -66,6 +66,7 @@ export class Pointer extends Group {
         if (!this._mode.canChange) {
             return false
         }
+        this._mode.onRemove()
         this._mode = mode
         this.onModeChange.forEach(cb => cb(mode.type))
         return true

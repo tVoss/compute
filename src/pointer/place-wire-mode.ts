@@ -109,4 +109,9 @@ export class PlaceWireMode implements PointerMode {
         this.canChange = true
         this.pointer.setMode(startWire)
     }
+
+    onRemove() {
+        this.highlight.removeParent()
+        this.wire.removeParent()
+    }
 }

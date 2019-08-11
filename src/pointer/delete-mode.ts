@@ -20,5 +20,7 @@ export class DeleteMode implements PointerMode {
         this.pointer.board.removeChip(chip)
     }
 
+    onRemove(): void {
+    }
 
 }
