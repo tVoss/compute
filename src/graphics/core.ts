@@ -16,11 +16,25 @@ export namespace Point {
     }
 }
 
+export enum Orientation {
+    Right,
+    Down,
+    Left,
+    Up
+}
+
+export namespace Orientation {
+    export function add(a: Orientation, b: Orientation): Orientation {
+        return (a + b) % 4 
+    }
+}
+
 export abstract class Entity {
     protected _parent?: Group
     protected _localPosition: Point
     protected _scale: number
     protected _zIndex: number
+    protected _orientation: Orientation = Orientation.Right
 
     constructor() {
         this._localPosition = { x: 0, y: 0 }
@@ -36,6 +50,21 @@ export abstract class Entity {
             x: this._localPosition.x + this._parent.position.x,
             y: this._localPosition.y + this._parent.position.y
         }
+    }
+    set position(value: Point) {
+        this._localPosition.x = value.x
+        this._localPosition.y = value.y
+    }
+
+    get orientation(): Orientation {
+        if (!this.parent) {
+            return this._orientation
+        }
+        return Orientation.add(this.parent.orientation, this._orientation)
+    }
+
+    set orientation(orientation: Orientation) {
+        this._orientation = orientation
     }
 
     get zIndex(): number {
@@ -72,13 +101,17 @@ export abstract class Entity {
         this._parent = undefined
         this._localPosition = globalPos
     }
-
-    set position(value: Point) {
-        this._localPosition.x = value.x
-        this._localPosition.y = value.y
+    
+    onDraw(ctx: CanvasRenderingContext2D) {
+        ctx.save()
+        ctx.translate(this.position.x, this.position.y)
+        ctx.rotate(this._orientation * Math.PI / 2)
+        ctx.translate(-this.position.x, -this.position.y)
+        this.draw(ctx)
+        ctx.restore()
     }
 
-    abstract draw(ctx: CanvasRenderingContext2D): void
+    protected abstract draw(ctx: CanvasRenderingContext2D): void
     abstract cointainsPoint(point: Point, ctx: CanvasRenderingContext2D): Entity | null
 }
 
@@ -100,7 +133,7 @@ export abstract class Group extends Entity {
 
     draw(ctx: CanvasRenderingContext2D) {
         const sorted = this._children.sort((a, b) => a.zIndex - b.zIndex)
-        sorted.forEach(e => e.draw(ctx))
+        sorted.forEach(e => e.onDraw(ctx))
     }
 
     cointainsPoint(point: Point, ctx: CanvasRenderingContext2D) {

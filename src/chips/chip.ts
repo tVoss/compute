@@ -10,6 +10,7 @@ export enum ChipType {
     TriState,
     Nand,
     Led,
+    Clock,
     _size
 }
 

@@ -18,25 +18,13 @@ export class GrabberMode implements PointerMode {
         const hoverChip = this.pointer.board.cointainsPoint(pos, ctx)
         if (!hoverChip) {
             this.hoverChip && (this.hoverChip.scale = 1)
-            this.hoverChip && this.updateWires(this.hoverChip)
+            this.hoverChip && this.hoverChip.updateWires(this.pointer.board)
         } else {
             hoverChip.scale = 1.2
-            this.updateWires(hoverChip)
+            hoverChip.updateWires(this.pointer.board)
         }
         this.hoverChip = hoverChip || undefined
     }
-
-    updateWires(chip: ChipSprite)  {
-        chip.chip.inputs.forEach(i => {
-            const ws = this.pointer.board.findConnectedWire(i)
-            ws && ws.updateNodes()
-        })
-        chip.chip.outputs.forEach(o => {
-            const ws = this.pointer.board.findConnectedWire(o)
-            ws && ws.updateNodes()
-        })
-    }
-
 
     onClick(point: Point, ctx: CanvasRenderingContext2D): void {
         const chip = this.pointer.board.cointainsPoint(point, ctx)

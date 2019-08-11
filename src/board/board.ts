@@ -12,6 +12,8 @@ import { Input } from "../chips/input";
 import { Chip, ChipType } from "../chips/chip";
 import { EmptyEntity } from '../graphics/empty-entity'
 import { LedSprite } from "../graphics/sprites/led-sprite";
+import { ClockSprite } from '../graphics/sprites/clock-sprite'
+import { Clock } from "../chips/clock";
 
 let xOffset = 50
 let yOffset = 100
@@ -26,8 +28,12 @@ let currY = 0
 export class Board extends Group {
     private _tickCount = 0
 
-    wireSprites: WireSprite[] = []
-    chipSprites: ChipSprite[] = []
+    get wireSprites() {
+        return this._children.filter(e => e instanceof WireSprite) as WireSprite[]
+    }
+    get chipSprites() {
+        return this._children.filter(e => e instanceof ChipSprite) as ChipSprite[]
+    }
 
     constructor() {
         super()
@@ -37,16 +43,12 @@ export class Board extends Group {
     addWire(wire: Wire) {
         const sprite = new WireSprite(this, wire)
         sprite.setParent(this)
-        this.wireSprites.push(sprite)
         return sprite
     }
 
     addChip = (chip: Chip) => {
         const sprite = this.getChipSprite(chip)
         sprite.setParent(this)
-        if (sprite instanceof ChipSprite) {
-            this.chipSprites.push(sprite)
-        }
         return sprite
     }
 
@@ -71,7 +73,6 @@ export class Board extends Group {
         })
 
         // Delete chip
-        this.chipSprites = this.chipSprites.filter(cs => cs !== removeMe)
         removeMe.removeParent()
 
         // Cleanup wires
@@ -80,9 +81,7 @@ export class Board extends Group {
                 dw.wire.input.put(null)
             }
             dw.removeParent()
-            this.wireSprites = this.wireSprites.filter(s => s !== dw)
         })
-        this.wireSprites = this.wireSprites.filter(s => deadWires.indexOf(s) === -1)
     }
 
     cointainsPoint(point: Point, ctx: CanvasRenderingContext2D) {
@@ -96,10 +95,10 @@ export class Board extends Group {
 
     tick = () => {
         console.log(`--- TiCK (${this._tickCount}) ---`)
+        this.chipSprites.forEach(c => c instanceof ClockSprite && c.chip.tick())
         this.wireSprites.forEach(w => w.wire.read())
-
-        console.log(`--- DONE (${this._tickCount}) ---`)
         this.wireSprites.forEach(w => w.wire.write())
+        console.log(`--- DONE (${this._tickCount}) ---`)
 
         this._tickCount++
     }
@@ -170,6 +169,9 @@ export class Board extends Group {
                 break
             case ChipType.Led:
                 sprite = new LedSprite(chip as Led)
+                break
+            case ChipType.Clock:
+                sprite = new ClockSprite(chip as Clock)
                 break
             default: return new EmptyEntity()
         }

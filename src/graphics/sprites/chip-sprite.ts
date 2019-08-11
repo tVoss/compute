@@ -1,12 +1,14 @@
-import { Entity, Point } from "../core";
+import { Entity, Point, Orientation } from "../core";
 import { Input } from "../../chips/input";
 import { Output } from "../../chips/output";
 import { Chip } from "../../chips/chip";
+import { Board } from "../../board/board";
 
 export type DrawPath = CanvasPath & CanvasDrawPath
 
 export abstract class ChipSprite extends Entity {
     private _grid = 25
+    protected _orientation = Orientation.Up
 
     abstract chip: Chip
 
@@ -29,6 +31,17 @@ export abstract class ChipSprite extends Entity {
             x: p.x - ((p.x - this._grid / 2) % (this._grid * 1)),
             y: p.y - ((p.y - this._grid / 2) % (this._grid * 1))
         }
+    }
+
+    updateWires(board: Board) {
+        this.chip.inputs.forEach(i => {
+            const ws = board.findConnectedWire(i)
+            ws && ws.updateNodes()
+        })
+        this.chip.outputs.forEach(o => {
+            const ws = board.findConnectedWire(o)
+            ws && ws.updateNodes()
+        })
     }
 
     tryFindPort(point: Point, radius: number): [Input | Output, Point] | null {
