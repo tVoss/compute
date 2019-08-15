@@ -29,6 +29,7 @@ export class RotateMode implements PointerMode {
             return
         }
         chip.orientation = Orientation.add(chip.orientation, 1)
+        chip.updateWires(this.pointer.board)
     }
     
     onRemove(): void {

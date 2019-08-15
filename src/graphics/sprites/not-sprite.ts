@@ -38,7 +38,7 @@ export class NotSprite extends ChipSprite {
         ctx.stroke()
     }
 
-    getInputPos(input: Input) {
+    _getInputPos(input: Input) {
         if (this.chip.a === input) {
             return {
                 x: this.position.x - this.scale,
@@ -48,7 +48,7 @@ export class NotSprite extends ChipSprite {
         return null
     }
 
-    getOutputPos(output: Output) {
+    _getOutputPos(output: Output) {
         if (output === this.chip.x) {
             return {
                 x: this.position.x + this.scale,

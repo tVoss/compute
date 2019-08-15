@@ -27,11 +27,11 @@ export class ButtonSprite extends ChipSprite {
         ctx.fill()
     }
 
-    getInputPos(input: Input): Point | null {
+    _getInputPos(input: Input): Point | null {
         return null
     }
 
-    getOutputPos(output: Output) {
+    _getOutputPos(output: Output) {
         if (output === this.chip.x) {
             return this.position
         }

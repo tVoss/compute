@@ -13,10 +13,10 @@ export class ClockSprite extends ChipSprite {
         this.chip = clock
     }
 
-    getInputPos(input: Input) {
+    _getInputPos(input: Input) {
         return null
     }
-    getOutputPos(output: Output) {
+    _getOutputPos(output: Output) {
         if (output === this.chip.x) {
             return this.position
         }

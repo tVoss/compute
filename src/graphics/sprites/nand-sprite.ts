@@ -40,7 +40,7 @@ export class NandSprite extends ChipSprite {
         ctx.stroke()
     }
 
-    getInputPos(input: Input): Point | null {
+    _getInputPos(input: Input): Point | null {
         if (input === this.chip.a) {
             return {
                 x: this.position.x - this.scale,
@@ -56,7 +56,7 @@ export class NandSprite extends ChipSprite {
         return null
     }
 
-    getOutputPos(output: Output) {
+    _getOutputPos(output: Output) {
         if (output === this.chip.x) {
             return {
                 x: this.position.x + this.scale,

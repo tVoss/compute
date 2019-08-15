@@ -6,13 +6,25 @@ export interface Point {
 }
 
 export namespace Point {
-    export function dist(a: Point, b: Point) {
+
+    export function dist(a: Point, b: Point): number {
         return Math.sqrt(dist2(a, b))
     }
-    export function dist2(a: Point, b: Point) {
+
+    export function dist2(a: Point, b: Point): number {
         const dx = a.x - b.x
         const dy = a.y - b.y
         return dx * dx + dy * dy
+    }
+
+    export function sub(a: Point, b: Point): Point {
+        return { x: a.x - b.x, y: a.y - b.y }
+    }
+
+    export function rotate(point: Point, center: Point, radians: number): Point {
+        var x = Math.cos(radians) * (point.x - center.x) - Math.sin(radians) * (point.y - center.y) + center.x;
+        var y = Math.sin(radians) * (point.x - center.x) + Math.cos(radians) * (point.y - center.y) + center.y;
+        return { x, y }
     }
 }
 

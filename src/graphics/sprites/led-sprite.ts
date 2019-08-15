@@ -32,14 +32,14 @@ export class LedSprite extends ChipSprite {
         ctx.fill()
     }
 
-    getInputPos(input: Input): Point | null {
+    _getInputPos(input: Input): Point | null {
         if (input === this.chip.a) {
             return this.position
         }
         return null
     }
 
-    getOutputPos(output: Output) {
+    _getOutputPos(output: Output) {
         return null
     }
 }

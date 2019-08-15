@@ -42,6 +42,10 @@ $('#load').click(() => {
     Computer.pointer.board = Computer.board
 })
 $('#go').click(() => Computer.board.tick())
+$('#clear').click(() => {
+    Computer.board = new Board()
+    Computer.pointer.board = Computer.board
+})
 const computeElement = $('#compute')
 computeElement.click(e => Computer.pointer.onClick({ x: e.offsetX, y: e.offsetY }, Computer.context))
 computeElement.mousemove(e => Computer.pointer.onMove({ x: e.offsetX, y: e.offsetY }, Computer.context))
