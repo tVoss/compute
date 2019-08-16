@@ -113,15 +113,8 @@ export class Board extends Group {
         return null
     }
 
-    findConnectedWire(port: Port) {
-        for (let i = 0; i < this.wireSprites.length; i++) {
-            const ws = this.wireSprites[i]
-            if (ws.wire.input === port || ws.wire.output === port) {
-                return ws
-            }
-        }
-        console.warn('Could not find wire for port: ' + port.id)
-        return null
+    findConnectedWires(port: Port): WireSprite[] {
+        return this.wireSprites.filter(ws => ws.wire.input === port || ws.wire.output === port)
     }
 
     getPortPos(port: Port) {

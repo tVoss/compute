@@ -7,7 +7,7 @@ import { Board } from "../../board/board";
 export type DrawPath = CanvasPath & CanvasDrawPath
 
 export abstract class ChipSprite extends Entity {
-    private _grid = 25
+    private _grid = 20
 
     abstract chip: Chip
 
@@ -26,11 +26,19 @@ export abstract class ChipSprite extends Entity {
     }
 
     getInputPos(input: Input): Point | null {
-        const pos = this._getInputPos(input)
-        if (pos === null) {
+        if (!this.chip.inputs.has(input.id)) {
             return null
         }
-        return Point.rotate(pos, this.position, this.orientation * Math.PI / 2)
+        const count = this.chip.inputs.size;
+        const idx = [...this.chip.inputs.keys()]
+            .sort().indexOf(input.id)
+
+        const pos = {
+            x: this.position.x - this.scale,
+            y: this.position.y - this.scale + (this.scale * 2 / (count + 1)) * (1 + idx)
+        }
+        return pos
+        //return Point.rotate(pos, this.position, this.orientation * Math.PI / 2)
     }
 
     getOutputPos(output: Output): Point | null {
@@ -50,18 +58,16 @@ export abstract class ChipSprite extends Entity {
 
     updateWires(board: Board) {
         this.chip.inputs.forEach(i => {
-            const ws = board.findConnectedWire(i)
-            ws && ws.updateNodes()
+            board.findConnectedWires(i).forEach(ws => ws.updateNodes())
         })
         this.chip.outputs.forEach(o => {
-            const ws = board.findConnectedWire(o)
-            ws && ws.updateNodes()
+            board.findConnectedWires(o).forEach(ws => ws.updateNodes())
         })
     }
 
     tryFindPort(point: Point, radius: number): [Input | Output, Point] | null {
         for (const input of this.chip.inputs.values()) {
-            const pos = this._getInputPos(input) as Point
+            const pos = this.getInputPos(input) as Point
             const hit = Point.dist(point, pos) <= radius
             if (hit) {
                 return [input, pos]
