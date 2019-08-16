@@ -11,7 +11,8 @@ export enum ChipType {
     Nand,
     Led,
     Clock,
-    _size
+    Nor,
+    _size,
 }
 
 export namespace ChipTypes {

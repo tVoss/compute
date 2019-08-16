@@ -11,8 +11,6 @@ export abstract class ChipSprite extends Entity {
 
     abstract chip: Chip
 
-    protected abstract _getInputPos(input: Input): Point | null
-    protected abstract _getOutputPos(output: Output): Point | null
     abstract makeChipBodyPath(ctx: DrawPath): void
     
     get position() {
@@ -37,16 +35,22 @@ export abstract class ChipSprite extends Entity {
             x: this.position.x - this.scale,
             y: this.position.y - this.scale + (this.scale * 2 / (count + 1)) * (1 + idx)
         }
-        return pos
-        //return Point.rotate(pos, this.position, this.orientation * Math.PI / 2)
+        return Point.rotate(pos, this.position, Math.PI / 2 * this.orientation)
     }
 
     getOutputPos(output: Output): Point | null {
-        const pos = this._getOutputPos(output)
-        if (pos === null) {
+        if (!this.chip.outputs.has(output.id)) {
             return null
         }
-        return Point.rotate(pos, this.position, this.orientation * Math.PI / 2)
+        const count = this.chip.outputs.size;
+        const idx = [...this.chip.outputs.keys()]
+            .sort().indexOf(output.id)
+
+        const pos = {
+            x: this.position.x + this.scale,
+            y: this.position.y - this.scale + (this.scale * 2 / (count + 1)) * (1 + idx)
+        }
+        return Point.rotate(pos, this.position, Math.PI / 2 * this.orientation)
     }
 
     alignToGrid(p: Point): Point {
@@ -74,7 +78,7 @@ export abstract class ChipSprite extends Entity {
             }
         }
         for (const output of this.chip.outputs.values()) {
-            const pos = this._getOutputPos(output) as Point
+            const pos = this.getOutputPos(output) as Point
             const hit = Point.dist(point, pos) <= radius
             if (hit) {
                 return [output, pos]

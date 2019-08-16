@@ -68,6 +68,21 @@ export class NandGate extends Chip {
     }
 }
 
+export class NorGate extends Chip {
+    readonly a = this.createInput('a')
+    readonly b = this.createInput('b')
+    readonly x = this.createOutput('x', () => {
+        if (Signal.anyNulls(this.a.sig, this.b.sig)) {
+            return null
+        }
+        return !(this.a.sig || this.b.sig)
+    })
+
+    constructor(id: string) {
+        super(id, ChipType.Nor)
+    }
+}
+
 export class TriState extends Chip {
     readonly a = this.createInput('a')
     readonly en = this.createInput('en')

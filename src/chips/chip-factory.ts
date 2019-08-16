@@ -1,5 +1,5 @@
 import { ChipType } from './chip'
-import { AndGate, Button, NandGate, NotGate, OrGate, TriState, Led } from './gates'
+import { AndGate, Button, NandGate, NotGate, OrGate, TriState, Led, NorGate } from './gates'
 import {Clock} from './clock'
 
 export class ChipFactory {
@@ -21,6 +21,8 @@ export class ChipFactory {
                 return new Led(id)
             case ChipType.Clock:
                 return new Clock(id, 10)
+            case ChipType.Nor:
+                return new NorGate(id)
             case ChipType._size:
                 throw new Error('Cannot create _size chip type')
             default:

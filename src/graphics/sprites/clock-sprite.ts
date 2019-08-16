@@ -12,16 +12,6 @@ export class ClockSprite extends ChipSprite {
         super()
         this.chip = clock
     }
-
-    _getInputPos(input: Input) {
-        return null
-    }
-    _getOutputPos(output: Output) {
-        if (output === this.chip.x) {
-            return this.position
-        }
-        return null
-    }
     makeChipBodyPath(ctx: DrawPath): void {
         const { x, y } = this.position
 

@@ -27,17 +27,6 @@ export class ButtonSprite extends ChipSprite {
         ctx.fill()
     }
 
-    _getInputPos(input: Input): Point | null {
-        return null
-    }
-
-    _getOutputPos(output: Output) {
-        if (output === this.chip.x) {
-            return this.position
-        }
-        return null
-    }
-
     onPress(point: Point): void {
         this.chip.press()
     }
