@@ -17,12 +17,7 @@ export class Button extends Chip {
 export class AndGate extends Chip {
     readonly a = this.createInput('a')
     readonly b = this.createInput('b')
-    readonly x = this.createOutput('x', () => {
-        if (Signal.anyNulls(this.a.sig, this.b.sig)) {
-            return null
-        }
-        return this.a.sig && this.b.sig
-    })
+    readonly x = this.createOutput('x', () => this.a.sig && this.b.sig)
 
     constructor(id: string) {
         super(id, ChipType.And)
@@ -32,12 +27,7 @@ export class AndGate extends Chip {
 export class OrGate extends Chip {
     readonly a = this.createInput('a')
     readonly b = this.createInput('b')
-    readonly x = this.createOutput('x', () => {
-        if (Signal.anyNulls(this.a.sig, this.b.sig)) {
-            return null
-        }
-        return this.a.sig || this.b.sig
-    })
+    readonly x = this.createOutput('x', () => this.a.sig || this.b.sig)
 
     constructor(id: string) {
         super(id, ChipType.Or)
@@ -46,7 +36,7 @@ export class OrGate extends Chip {
 
 export class NotGate extends Chip {
     readonly a = this.createInput('a')
-    readonly x = this.createOutput('b', () => this.a.sig === null ? null : !this.a.sig)
+    readonly x = this.createOutput('b', () => !this.a.sig)
 
     constructor(id: string) {
         super(id, ChipType.Not)
@@ -56,12 +46,7 @@ export class NotGate extends Chip {
 export class NandGate extends Chip {
     readonly a = this.createInput('a')
     readonly b = this.createInput('b')
-    readonly x = this.createOutput('x', () => {
-        if (Signal.anyNulls(this.a.sig, this.b.sig)) {
-            return null
-        }
-        return !(this.a.sig && this.b.sig)
-    })
+    readonly x = this.createOutput('x', () => !(this.a.sig && this.b.sig))
 
     constructor(id: string) {
         super(id, ChipType.Nand)
@@ -71,15 +56,20 @@ export class NandGate extends Chip {
 export class NorGate extends Chip {
     readonly a = this.createInput('a')
     readonly b = this.createInput('b')
-    readonly x = this.createOutput('x', () => {
-        if (Signal.anyNulls(this.a.sig, this.b.sig)) {
-            return null
-        }
-        return !(this.a.sig || this.b.sig)
-    })
+    readonly x = this.createOutput('x', () => !(this.a.sig || this.b.sig))
 
     constructor(id: string) {
         super(id, ChipType.Nor)
+    }
+}
+
+export class XorGate extends Chip {
+    readonly a = this.createInput('a')
+    readonly b = this.createInput('b')
+    readonly x = this.createOutput('x', () => (this.a.sig && !this.b.sig) || (!this.a.sig && this.b.sig))
+
+    constructor(id: string) {
+        super(id, ChipType.Xor)
     }
 }
 

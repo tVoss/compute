@@ -2,7 +2,7 @@ import { Signal } from './core'
 
 export class Input {
     readonly id: string
-    private _signal: Signal = null
+    private _signal: Signal = false
 
     constructor(id: string) {
         this.id = id

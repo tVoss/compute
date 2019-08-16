@@ -17,7 +17,7 @@ export class Wire {
     public input: Input
     public output: Output
 
-    _nextSignal: Signal = null
+    _nextSignal: Signal = false
 
     constructor(id: string, output: Output, input: Input) {
         this.id = id

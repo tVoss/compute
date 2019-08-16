@@ -3,7 +3,7 @@ import { Point, Entity, Group } from "../graphics/core";
 import { WireSprite } from "../graphics/sprites/wire-sprite";
 import { ChipSprite, DrawPath } from "../graphics/sprites/chip-sprite";
 import { AndSprite } from "../graphics/sprites/and-sprite";
-import { AndGate, NotGate, Button, NandGate, Led, OrGate, NorGate } from "../chips/gates";
+import { AndGate, NotGate, Button, NandGate, Led, OrGate, NorGate, XorGate } from "../chips/gates";
 import { NotSprite } from "../graphics/sprites/not-sprite";
 import { ButtonSprite } from "../graphics/sprites/button-sprite";
 import { NandSprite } from "../graphics/sprites/nand-sprite";
@@ -16,6 +16,7 @@ import { EmptyEntity } from '../graphics/empty-entity'
 import { LedSprite } from "../graphics/sprites/led-sprite";
 import { ClockSprite } from '../graphics/sprites/clock-sprite'
 import { Clock } from "../chips/clock";
+import { XorSprite } from "../graphics/sprites/xor-sprite";
 
 let xOffset = 50
 let yOffset = 100
@@ -173,6 +174,9 @@ export class Board extends Group {
                 break
             case ChipType.Nor:
                 sprite = new NorSprite(chip as NorGate)
+                break
+            case ChipType.Xor:
+                sprite = new XorSprite(chip as XorGate)
                 break
             default: return new EmptyEntity()
         }

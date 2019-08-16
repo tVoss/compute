@@ -3,15 +3,16 @@ import { Input } from "./input";
 import { Output } from "./output";
 
 export enum ChipType {
-    Button,
     And,
     Or,
     Not,
-    TriState,
+    Xor,
     Nand,
+    Nor,
+    Button,
     Led,
     Clock,
-    Nor,
+    TriState,
     _size,
 }
 
