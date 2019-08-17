@@ -40,11 +40,13 @@ $('#load').click(() => {
     }
     Computer.board = Computer.storage.loadBoard(name)
     Computer.pointer.board = Computer.board
+    Computer.pointer.setParent(Computer.board)
 })
 $('#go').click(() => Computer.board.tick())
 $('#clear').click(() => {
     Computer.board = new Board()
     Computer.pointer.board = Computer.board
+    Computer.pointer.setParent(Computer.board)
 })
 const computeElement = $('#compute')
 computeElement.click(e => Computer.pointer.onClick({ x: e.offsetX, y: e.offsetY }, Computer.context))
