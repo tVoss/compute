@@ -1,6 +1,6 @@
 import { PointerMode, Pointer, PointerModes } from "./pointer";
-import { Point } from "../graphics/core";
 import { ButtonSprite } from "../graphics/sprites/button-sprite";
+import { Point } from "../util/point";
 
 export class ClickerMode implements PointerMode {
     readonly type = PointerModes.Clicker  
@@ -13,8 +13,8 @@ export class ClickerMode implements PointerMode {
     onMove(pos: Point): void {
     }
 
-    onClick(point: import("../graphics/core").Point, ctx: CanvasRenderingContext2D): void {
-        const chip = this.pointer.board.cointainsPoint(point, ctx)
+    onClick(point: Point, ctx: CanvasRenderingContext2D): void {
+        const chip = this.pointer.board.tryFindEntity(point, ctx)
         if (chip && chip instanceof ButtonSprite) {
             chip.onPress(point)
         }

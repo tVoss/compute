@@ -1,6 +1,7 @@
 import { PointerMode, PointerModes, Pointer } from "./pointer";
-import { Point, Orientation } from "../graphics/core";
+import { Orientation } from "../graphics/orientation";
 import { ChipSprite } from "../graphics/sprites/chip-sprite";
+import { Point } from "../util/point";
 
 export class RotateMode implements PointerMode {
     readonly type = PointerModes.Rotate
@@ -13,7 +14,7 @@ export class RotateMode implements PointerMode {
     }
 
     onMove(pos: Point, ctx: CanvasRenderingContext2D): void {
-        const chip = this.pointer.board.cointainsPoint(pos, ctx)
+        const chip = this.pointer.board.tryFindEntity(pos, ctx)
         if (!chip) {
             this.onRemove()
             return
@@ -24,7 +25,7 @@ export class RotateMode implements PointerMode {
     }
     
     onClick(point: Point, ctx: CanvasRenderingContext2D): void {
-        const chip = this.pointer.board.cointainsPoint(point, ctx)
+        const chip = this.pointer.board.tryFindEntity(point, ctx)
         if (!chip) {
             return
         }

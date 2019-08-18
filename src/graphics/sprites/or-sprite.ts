@@ -21,7 +21,7 @@ export class OrSprite extends ChipSprite {
         ctx.closePath()
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    onDraw(ctx: CanvasRenderingContext2D) {
         ctx.strokeStyle = '#eeeeee'
         ctx.lineWidth = 3
 

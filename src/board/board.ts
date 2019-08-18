@@ -1,5 +1,6 @@
 import { Signal, Wire, Port } from "../chips/core";
-import { Point, Entity, Group } from "../graphics/core";
+import { Group } from "../graphics/group";
+import { Entity } from "../graphics/entity";
 import { WireSprite } from "../graphics/sprites/wire-sprite";
 import { ChipSprite, DrawPath } from "../graphics/sprites/chip-sprite";
 import { AndSprite } from "../graphics/sprites/and-sprite";
@@ -17,6 +18,7 @@ import { LedSprite } from "../graphics/sprites/led-sprite";
 import { ClockSprite } from '../graphics/sprites/clock-sprite'
 import { Clock } from "../chips/clock";
 import { XorSprite } from "../graphics/sprites/xor-sprite";
+import { Point } from "../util/point";
 
 let xOffset = 50
 let yOffset = 100
@@ -87,9 +89,9 @@ export class Board extends Group {
         })
     }
 
-    cointainsPoint(point: Point, ctx: CanvasRenderingContext2D) {
+    tryFindEntity(point: Point, ctx: CanvasRenderingContext2D) {
         for (const cs of this.chipSprites) {
-            if (cs.cointainsPoint(point, ctx)) {
+            if (cs.tryFindEntity(point, ctx)) {
                 return cs
             }
         }

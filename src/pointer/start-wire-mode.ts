@@ -1,7 +1,7 @@
 import { PointerMode, PointerModes, Pointer } from './pointer'
-import { Point } from '../graphics/core';
 import { Highlight } from './highlight';
 import { PlaceWireMode } from './place-wire-mode'
+import { Point } from '../util/point';
 
 export class StartWireMode implements PointerMode {
     readonly type = PointerModes.StartWire    

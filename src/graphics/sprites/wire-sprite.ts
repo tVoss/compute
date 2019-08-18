@@ -1,6 +1,7 @@
-import { Entity, Point } from "../core";
+import { Entity } from "../entity";
 import { Wire, Signal } from "../../chips/core";
 import { Board } from "../../board/board";
+import { Point } from "../../util/point";
 
 export class WireSprite extends Entity {
     wire: Wire
@@ -38,7 +39,7 @@ export class WireSprite extends Entity {
         this._nodes = [outPos, next0, next1, inPos]
     }
 
-    draw(ctx: CanvasRenderingContext2D): void {
+    onDraw(ctx: CanvasRenderingContext2D): void {
         ctx.strokeStyle = Signal.getColor(this.wire._nextSignal)
         ctx.lineWidth = 2
 
@@ -55,7 +56,7 @@ export class WireSprite extends Entity {
         ctx.stroke()
     }
 
-    cointainsPoint(point: Point, ctx: CanvasRenderingContext2D): Entity | null {
+    tryFindEntity(point: Point, ctx: CanvasRenderingContext2D): Entity | null {
         return null
     }
 }

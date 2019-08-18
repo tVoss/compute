@@ -1,13 +1,15 @@
-import { Entity, Point, Orientation } from "../core";
+import { Orientation } from "../orientation";
+import { Entity } from "../entity";
 import { Input } from "../../chips/input";
 import { Output } from "../../chips/output";
 import { Chip } from "../../chips/chip";
 import { Board } from "../../board/board";
+import { Point } from "../../util/point";
 
 export type DrawPath = CanvasPath & CanvasDrawPath
 
 export abstract class ChipSprite extends Entity {
-    private _grid = 20
+    private _grid = 5
 
     abstract chip: Chip
 
@@ -18,9 +20,21 @@ export abstract class ChipSprite extends Entity {
     }
 
     set position(value: Point) {
-        const p = this.alignToGrid(value)
-        this._localPosition.x = p.x
-        this._localPosition.y = p.y
+        super.position = this.alignToGrid(value)
+    }
+
+    alignToGrid(p: Point): Point {
+        const scaled = Point.div(p, this._grid)
+        const round = Point.round(scaled)
+        return Point.mul(round, this._grid)
+    }
+
+    onHover() {
+        this.scale = 1.1
+    }
+
+    onUnhover() {
+        this.scale = 1
     }
 
     getInputPos(input: Input): Point | null {
@@ -53,13 +67,6 @@ export abstract class ChipSprite extends Entity {
         return Point.rotate(pos, this.position, Math.PI / 2 * this.orientation)
     }
 
-    alignToGrid(p: Point): Point {
-        return {
-            x: p.x - ((p.x - this._grid / 2) % (this._grid * 1)),
-            y: p.y - ((p.y - this._grid / 2) % (this._grid * 1))
-        }
-    }
-
     updateWires(board: Board) {
         this.chip.inputs.forEach(i => {
             board.findConnectedWires(i).forEach(ws => ws.updateNodes())
@@ -87,7 +94,7 @@ export abstract class ChipSprite extends Entity {
         return null
     }
 
-    cointainsPoint(point: Point, ctx: DrawPath): Entity | null {
+    tryFindEntity(point: Point, ctx: DrawPath): Entity | null {
         this.makeChipBodyPath(ctx)
         return ctx.isPointInPath(point.x, point.y) ? this : null
     }

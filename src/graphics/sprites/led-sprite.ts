@@ -1,9 +1,5 @@
-import { Entity, Point } from "../core";
 import { ChipSprite, DrawPath } from "./chip-sprite";
-import { Button, Led } from "../../chips/gates";
-import { Output } from "../../chips/output";
-import { Input } from "../../chips/input";
-import { Board } from "../../board/board";
+import { Led } from "../../chips/gates";
 import { Signal } from "../../chips/core";
 
 export class LedSprite extends ChipSprite {
@@ -20,7 +16,7 @@ export class LedSprite extends ChipSprite {
         ctx.closePath()
     }
 
-    draw(ctx: CanvasRenderingContext2D): void {
+    onDraw(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = 'gray'
         this.makeChipBodyPath(ctx)
         ctx.fill()

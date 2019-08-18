@@ -8,6 +8,8 @@ import {ChipFactory} from './chips/chip-factory'
 import { GrabberMode } from './pointer/grabber-mode';
 import { MoveChipMode } from './pointer/move-chip-mode';
 import { EmptyEntity } from './graphics/empty-entity';
+import { Guid } from './util/guid';
+import { UiButton } from './graphics/ui/ui-button';
 
 // Main computer
 const Computer = {
@@ -22,8 +24,12 @@ const computeCanvas = $('#compute').get()[0] as HTMLCanvasElement
 // Setup computer
 Computer.context = computeCanvas.getContext('2d') as CanvasRenderingContext2D
 Computer.storage = new BoardStorage()
-Computer.board = Computer.storage.loadBoard('test2')
+Computer.board = Computer.storage.loadBoard('flip')
 Computer.pointer = new Pointer(Computer.board)
+
+const button = new UiButton('cool', () => console.log('cool'))
+button.setParent(Computer.board)
+button.position = { x: 5, y: 5 }
 
 // Event handling
 $('#save').click(() => {
@@ -88,12 +94,11 @@ ChipTypes.getAll().forEach((name, type: ChipType)  => {
     btn.attr('id', name)
     btn.text(name)
 
-    let nextId = 0
     btn.click(() => {
         if (!Computer.pointer.mode.canChange) {
             return
         }
-        const gate = ChipFactory.getChip(type, name + '_click_' + nextId++)
+        const gate = ChipFactory.getChip(type, name + '_click_' + Guid.create())
         const sprite = Computer.board.addChip(gate)
         if (sprite instanceof EmptyEntity) {
             console.warn('Added gate returned empty entity: ' + gate.id)
@@ -126,8 +131,8 @@ function update() {
     Computer.context.fillRect(0, 0, 720, 720)
 
     // Draw
-    Computer.board.draw(Computer.context)
-    Computer.pointer.draw(Computer.context)
+    Computer.board.onDraw(Computer.context)
+    Computer.pointer.onDraw(Computer.context)
     
     // Repeat
     requestAnimationFrame(update)

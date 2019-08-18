@@ -1,10 +1,12 @@
-import { Entity, Point, Group } from '../graphics/core'
+import { Group } from "../graphics/group";
+import { Entity } from "../graphics/entity";
 import { Board } from '../board/board';
 import { ClickerMode } from './clicker-mode';
 import { DeleteMode } from './delete-mode';
 import { GrabberMode } from './grabber-mode';
 import { StartWireMode } from './start-wire-mode';
 import { RotateMode } from './rotate-mode';
+import { Point } from '../util/point';
 
 export enum PointerModes {
     Clicker,
@@ -56,7 +58,6 @@ export class Pointer extends Group {
         super()
         this.board = board
         this.setParent(board)
-        this._scale = 30
         this._mode = new NullMode()
     }
 
@@ -77,7 +78,7 @@ export class Pointer extends Group {
     }
 
     onMove(point: Point, ctx: CanvasRenderingContext2D) {
-        this._localPosition = point
+        this._localPosition = Point.div(point, this.board.scale)
         this.mode.onMove(point, ctx)
     }
 

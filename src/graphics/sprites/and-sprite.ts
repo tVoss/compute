@@ -1,8 +1,5 @@
 import { ChipSprite, DrawPath } from "./chip-sprite";
-import { Point } from "../core";
 import { AndGate } from "../../chips/gates";
-import { Output } from "../../chips/output";
-import { Input } from "../../chips/input";
 
 export class AndSprite extends ChipSprite {
     chip: AndGate
@@ -25,7 +22,7 @@ export class AndSprite extends ChipSprite {
         ctx.closePath()
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    onDraw(ctx: CanvasRenderingContext2D) {
         ctx.strokeStyle = '#eeeeee'
         ctx.lineWidth = 3
 

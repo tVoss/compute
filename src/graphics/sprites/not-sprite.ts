@@ -21,7 +21,7 @@ export class NotSprite extends ChipSprite {
         ctx.closePath()
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    onDraw(ctx: CanvasRenderingContext2D) {
         const x = this.position.x
         const y = this.position.y
         ctx.strokeStyle = '#eeeeee'

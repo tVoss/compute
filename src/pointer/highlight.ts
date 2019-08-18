@@ -1,10 +1,11 @@
-import { Entity, Point } from "../graphics/core";
+import { Entity } from "../graphics/entity";
+import { Point } from "../util/point";
 
 export class Highlight extends Entity {
     _scale = 5
     _zIndex = 10
 
-    draw(ctx: CanvasRenderingContext2D): void {
+    onDraw(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = 'yellow'
         ctx.beginPath()
         ctx.arc(this.position.x, this.position.y, this._scale, 0, Math.PI * 2)
@@ -12,7 +13,7 @@ export class Highlight extends Entity {
         ctx.fill()
     }    
     
-    cointainsPoint(point: Point, ctx: CanvasRenderingContext2D) {
+    tryFindEntity(point: Point, ctx: CanvasRenderingContext2D) {
         return null
     }
 }

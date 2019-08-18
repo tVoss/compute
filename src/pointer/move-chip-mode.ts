@@ -1,6 +1,7 @@
 import { PointerMode, Pointer, PointerModes } from './pointer'
-import { Point, Group } from '../graphics/core';
+import { Group } from "../graphics/group";
 import { ChipSprite } from '../graphics/sprites/chip-sprite';
+import { Point } from '../util/point';
 
 export class MoveChipMode implements PointerMode {
 
@@ -23,6 +24,7 @@ export class MoveChipMode implements PointerMode {
     }
 
     onMove(pos: Point): void {
+        console.log(pos)
         this.chip.updateWires(this.pointer.board)
     }
 

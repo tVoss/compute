@@ -1,9 +1,10 @@
-import { Entity, Point } from './core'
+import { Entity } from "./entity";
+import { Point } from '../util/point';
 
 export class EmptyEntity extends Entity {
-    draw(ctx: CanvasRenderingContext2D) {
-    }    
-    cointainsPoint(point: Point, ctx: CanvasRenderingContext2D) {
+    onDraw(ctx: CanvasRenderingContext2D) {
+    }
+    tryFindEntity(point: Point, ctx: CanvasRenderingContext2D) {
         return null
     }
 }

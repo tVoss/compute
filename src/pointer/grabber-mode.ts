@@ -1,7 +1,7 @@
 import { PointerMode, PointerModes, Pointer } from './pointer'
-import { Point } from '../graphics/core';
 import { MoveChipMode } from './move-chip-mode'
 import { ChipSprite } from '../graphics/sprites/chip-sprite';
+import { Point } from '../util/point';
 
 export class GrabberMode implements PointerMode {
     readonly type = PointerModes.Grab    
@@ -15,19 +15,17 @@ export class GrabberMode implements PointerMode {
     }
 
     onMove(pos: Point, ctx: CanvasRenderingContext2D): void {
-        const hoverChip = this.pointer.board.cointainsPoint(pos, ctx)
+        const hoverChip = this.pointer.board.tryFindEntity(pos, ctx)
         if (!hoverChip) {
-            this.hoverChip && (this.hoverChip.scale = 1)
-            this.hoverChip && this.hoverChip.updateWires(this.pointer.board)
+            this.hoverChip && this.hoverChip.onUnhover()
         } else {
-            hoverChip.scale = 1.1
-            hoverChip.updateWires(this.pointer.board)
+            hoverChip.onHover()
         }
         this.hoverChip = hoverChip || undefined
     }
 
     onClick(point: Point, ctx: CanvasRenderingContext2D): void {
-        const chip = this.pointer.board.cointainsPoint(point, ctx)
+        const chip = this.pointer.board.tryFindEntity(point, ctx)
         if (!chip) {
             return
         }
@@ -37,6 +35,6 @@ export class GrabberMode implements PointerMode {
     }
     
     onRemove(): void {
-        this.hoverChip && (this.hoverChip.scale = 1)
+        this.hoverChip && this.hoverChip.onUnhover()
     }
 }

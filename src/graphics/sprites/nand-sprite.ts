@@ -1,8 +1,5 @@
 import { ChipSprite, DrawPath } from "./chip-sprite";
-import { Point } from "../core";
 import { NandGate } from "../../chips/gates";
-import { Input } from "../../chips/input";
-import { Output } from "../../chips/output";
 
 export class NandSprite extends ChipSprite {
     chip: NandGate
@@ -25,7 +22,7 @@ export class NandSprite extends ChipSprite {
         ctx.closePath()
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    onDraw(ctx: CanvasRenderingContext2D) {
         ctx.strokeStyle = '#eeeeee'
         ctx.lineWidth = 3
 

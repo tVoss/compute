@@ -1,8 +1,6 @@
-import { Entity, Point } from "../core";
 import { ChipSprite, DrawPath } from "./chip-sprite";
 import { Button } from "../../chips/gates";
-import { Output } from "../../chips/output";
-import { Input } from "../../chips/input";
+import { Point } from "../../util/point";
 
 export class ButtonSprite extends ChipSprite {
     chip: Button
@@ -18,7 +16,7 @@ export class ButtonSprite extends ChipSprite {
         ctx.closePath()
     }
 
-    draw(ctx: CanvasRenderingContext2D): void {
+    onDraw(ctx: CanvasRenderingContext2D): void {
         const value = this.chip.x.get()
         const color = value === null ? 'gray' : value ? 'green' : 'red'
         ctx.fillStyle = color

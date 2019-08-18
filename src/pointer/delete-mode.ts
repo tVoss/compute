@@ -1,5 +1,5 @@
 import { PointerMode, PointerModes, Pointer } from "./pointer";
-import { Point } from "../graphics/core";
+import { Point } from "../util/point";
 
 export class DeleteMode implements PointerMode {
     readonly type = PointerModes.Delete   
@@ -13,7 +13,7 @@ export class DeleteMode implements PointerMode {
     }
 
     onClick(point: Point, ctx: CanvasRenderingContext2D): void {
-        const chip = this.pointer.board.cointainsPoint(point, ctx)
+        const chip = this.pointer.board.tryFindEntity(point, ctx)
         if (!chip) {
             return
         }

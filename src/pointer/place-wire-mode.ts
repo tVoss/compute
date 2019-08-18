@@ -1,10 +1,11 @@
-import { Entity, Point } from "../graphics/core";
+import { Entity } from "../graphics/entity";
 import { Port, Wire } from "../chips/core";
 import { PointerMode, PointerModes, Pointer } from "./pointer";
 import { Output } from "../chips/output";
 import { Input } from "../chips/input";
 import { StartWireMode } from './start-wire-mode'
 import { Highlight } from "./highlight";
+import { Point } from "../util/point";
 
 class HeldWire extends Entity {
 
@@ -17,7 +18,7 @@ class HeldWire extends Entity {
         this.start = start
     }
 
-    draw(ctx: CanvasRenderingContext2D): void {
+    onDraw(ctx: CanvasRenderingContext2D): void {
         ctx.strokeStyle = 'cyan'
         ctx.lineWidth = 2
 
@@ -28,7 +29,7 @@ class HeldWire extends Entity {
         ctx.stroke()
     }
 
-    cointainsPoint(point: Point, ctx: CanvasRenderingContext2D): Entity | null {
+    tryFindEntity(point: Point, ctx: CanvasRenderingContext2D): Entity | null {
         return null
     }
 }

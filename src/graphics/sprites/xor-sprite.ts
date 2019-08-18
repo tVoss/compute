@@ -22,7 +22,7 @@ export class XorSprite extends ChipSprite {
         
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    onDraw(ctx: CanvasRenderingContext2D) {
         ctx.strokeStyle = '#eeeeee'
         ctx.lineWidth = 3
 
