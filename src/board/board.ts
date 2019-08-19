@@ -40,11 +40,6 @@ export class Board extends Group {
         return this.allChildren.filter(e => e instanceof ChipSprite) as ChipSprite[]
     }
 
-    constructor() {
-        super()
-        this._scale = 25;
-    }
-
     addWire(wire: Wire) {
         const sprite = new WireSprite(this, wire)
         sprite.setParent(this)
@@ -54,6 +49,7 @@ export class Board extends Group {
     addChip = (chip: Chip) => {
         const sprite = this.getChipSprite(chip)
         sprite.setParent(this)
+        sprite.board = this
         return sprite
     }
 
@@ -180,7 +176,7 @@ export class Board extends Group {
             case ChipType.Xor:
                 sprite = new XorSprite(chip as XorGate)
                 break
-            default: return new EmptyEntity()
+            default: throw new Error('Could not make sprite for: ' + ChipType[chip.type])
         }
         sprite.position = this.getNextPos()
 

@@ -14,10 +14,10 @@ export class OrSprite extends ChipSprite {
         const { x, y } = this.position
 
         ctx.beginPath()
-        ctx.moveTo(x - this.scale, y + this.scale)
-        ctx.quadraticCurveTo(x, y + this.scale, this.position.x + this.scale, this.position.y)
-        ctx.quadraticCurveTo(x, y - this.scale, x - this.scale, y - this.scale)
-        ctx.quadraticCurveTo(x - this.scale / 2, y, x-this.scale, y + this.scale)
+        ctx.moveTo(x - ChipSprite.kSize, y + ChipSprite.kSize)
+        ctx.quadraticCurveTo(x, y + ChipSprite.kSize, this.position.x + ChipSprite.kSize, this.position.y)
+        ctx.quadraticCurveTo(x, y - ChipSprite.kSize, x - ChipSprite.kSize, y - ChipSprite.kSize)
+        ctx.quadraticCurveTo(x - ChipSprite.kSize / 2, y, x-ChipSprite.kSize, y + ChipSprite.kSize)
         ctx.closePath()
     }
 

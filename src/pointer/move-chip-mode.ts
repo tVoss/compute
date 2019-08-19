@@ -18,14 +18,13 @@ export class MoveChipMode implements PointerMode {
         this.oldParent = chip.parent
         this.lastMode = lastMode
         
-        chip.position = { x: 0, y: 0 }
         chip.setParent(this.pointer)
-        chip.updateWires(pointer.board)
+        chip.position = { x: 0, y: 0 }
+        chip.onHover()
     }
 
     onMove(pos: Point): void {
-        console.log(pos)
-        this.chip.updateWires(this.pointer.board)
+        this.chip.updateWires()
     }
 
     onClick(point: Point, ctx: CanvasRenderingContext2D): void {
@@ -35,9 +34,11 @@ export class MoveChipMode implements PointerMode {
 
     onRemove(): void {
         this.chip.removeParent()
+        this.chip.onUnhover()
         if (this.oldParent) {
             this.chip.setParent(this.oldParent)
-            this.chip.updateWires(this.pointer.board)
+            this.chip.position = Point.div(this.pointer.position, this.pointer.scale)
+            this.chip.updateWires()
         }
     }
 }

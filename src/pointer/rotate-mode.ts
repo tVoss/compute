@@ -19,8 +19,7 @@ export class RotateMode implements PointerMode {
             this.onRemove()
             return
         }
-        chip.scale = 1.2
-        chip.updateWires(this.pointer.board)
+        chip.onHover()
         this.hoverChip = chip
     }
     
@@ -30,13 +29,12 @@ export class RotateMode implements PointerMode {
             return
         }
         chip.orientation = Orientation.add(chip.orientation, 1)
-        chip.updateWires(this.pointer.board)
+        chip.updateWires()
     }
     
     onRemove(): void {
         if (this.hoverChip) {
-            this.hoverChip.scale = 1
-            this.hoverChip.updateWires(this.pointer.board)
+            this.hoverChip.onUnhover()
             this.hoverChip = undefined
         }
     }

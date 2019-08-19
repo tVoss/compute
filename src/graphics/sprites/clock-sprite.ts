@@ -13,7 +13,7 @@ export class ClockSprite extends ChipSprite {
         const { x, y } = this.position
 
         ctx.beginPath()
-        ctx.rect(x - this.scale, y - this.scale, this.scale * 2, this.scale * 2)
+        ctx.rect(x - ChipSprite.kSize, y - ChipSprite.kSize, ChipSprite.kSize * 2, ChipSprite.kSize * 2)
         ctx.closePath()
     }
     onDraw(ctx: CanvasRenderingContext2D): void {

@@ -68,6 +68,7 @@ export abstract class Entity {
     draw(ctx: CanvasRenderingContext2D) {
         ctx.save();
         ctx.translate(this.position.x, this.position.y);
+        ctx.scale(1 * this.scale, 1 * this.scale)
         ctx.rotate(this._orientation * Math.PI / 2);
         ctx.translate(-this.position.x, -this.position.y);
         this.onDraw(ctx);

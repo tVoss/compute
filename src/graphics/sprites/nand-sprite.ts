@@ -14,11 +14,11 @@ export class NandSprite extends ChipSprite {
         const y = this.position.y
 
         ctx.beginPath()
-        ctx.moveTo(x - this.scale / 5, y + this.scale)
-        ctx.lineTo(x - this.scale, y + this.scale)
-        ctx.lineTo(x - this.scale, y - this.scale)
-        ctx.lineTo(x - this.scale / 5, y - this.scale)
-        ctx.arc(x - this.scale / 5, y, this.scale, Math.PI * 3 / 2, Math.PI / 2)
+        ctx.moveTo(x - ChipSprite.kSize / 5, y + ChipSprite.kSize)
+        ctx.lineTo(x - ChipSprite.kSize, y + ChipSprite.kSize)
+        ctx.lineTo(x - ChipSprite.kSize, y - ChipSprite.kSize)
+        ctx.lineTo(x - ChipSprite.kSize / 5, y - ChipSprite.kSize)
+        ctx.arc(x - ChipSprite.kSize / 5, y, ChipSprite.kSize, Math.PI * 3 / 2, Math.PI / 2)
         ctx.closePath()
     }
 
@@ -32,7 +32,7 @@ export class NandSprite extends ChipSprite {
 
         // DOT
         ctx.beginPath()
-        ctx.arc(this.position.x + 9 * this.scale / 10, this.position.y, this.scale / 10, 0, Math.PI * 2)
+        ctx.arc(this.position.x + 9 * ChipSprite.kSize / 10, this.position.y, ChipSprite.kSize / 10, 0, Math.PI * 2)
         ctx.closePath()
         ctx.stroke()
     }

@@ -2,13 +2,13 @@ import { Entity } from "../graphics/entity";
 import { Point } from "../util/point";
 
 export class Highlight extends Entity {
-    _scale = 5
+    _size = 5
     _zIndex = 10
 
     onDraw(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = 'yellow'
         ctx.beginPath()
-        ctx.arc(this.position.x, this.position.y, this._scale, 0, Math.PI * 2)
+        ctx.arc(this.position.x, this.position.y, this._size, 0, Math.PI * 2)
         ctx.closePath()
         ctx.fill()
     }    

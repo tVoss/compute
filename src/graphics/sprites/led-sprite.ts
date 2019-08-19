@@ -12,7 +12,7 @@ export class LedSprite extends ChipSprite {
     makeChipBodyPath(ctx: DrawPath): void {
         const { x, y } = this.position
         ctx.beginPath()
-        ctx.arc(x, y, this.scale / 2, 0, Math.PI * 2)
+        ctx.arc(x, y, ChipSprite.kSize / 2, 0, Math.PI * 2)
         ctx.closePath()
     }
 
@@ -23,7 +23,7 @@ export class LedSprite extends ChipSprite {
 
         ctx.fillStyle = Signal.getColor(this.chip.a.sig)
         ctx.beginPath()
-        ctx.arc(this.position.x, this.position.y, this.scale / 4, 0, Math.PI * 2)
+        ctx.arc(this.position.x, this.position.y, ChipSprite.kSize / 4, 0, Math.PI * 2)
         ctx.closePath()
         ctx.fill()
     }

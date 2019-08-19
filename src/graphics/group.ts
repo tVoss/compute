@@ -1,6 +1,7 @@
 import { Point } from '../util/point';
 import { Entity } from './entity';
-export abstract class Group extends Entity {
+
+export class Group extends Entity {
     protected _children: Entity[];
     constructor() {
         super();

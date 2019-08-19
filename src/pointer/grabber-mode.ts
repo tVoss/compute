@@ -16,7 +16,7 @@ export class GrabberMode implements PointerMode {
 
     onMove(pos: Point, ctx: CanvasRenderingContext2D): void {
         const hoverChip = this.pointer.board.tryFindEntity(pos, ctx)
-        if (!hoverChip) {
+        if (!hoverChip || hoverChip !== this.hoverChip) {
             this.hoverChip && this.hoverChip.onUnhover()
         } else {
             hoverChip.onHover()
@@ -36,5 +36,6 @@ export class GrabberMode implements PointerMode {
     
     onRemove(): void {
         this.hoverChip && this.hoverChip.onUnhover()
+        this.hoverChip = undefined
     }
 }

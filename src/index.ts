@@ -10,6 +10,7 @@ import { MoveChipMode } from './pointer/move-chip-mode';
 import { EmptyEntity } from './graphics/empty-entity';
 import { Guid } from './util/guid';
 import { UiButton } from './graphics/ui/ui-button';
+import { Group } from './graphics/group';
 
 // Main computer
 const Computer = {
@@ -25,7 +26,8 @@ const computeCanvas = $('#compute').get()[0] as HTMLCanvasElement
 Computer.context = computeCanvas.getContext('2d') as CanvasRenderingContext2D
 Computer.storage = new BoardStorage()
 Computer.board = Computer.storage.loadBoard('flip')
-Computer.pointer = new Pointer(Computer.board)
+Computer.pointer = new Pointer()
+Computer.pointer.board = Computer.board
 
 const button = new UiButton('cool', () => console.log('cool'))
 button.setParent(Computer.board)
@@ -46,13 +48,11 @@ $('#load').click(() => {
     }
     Computer.board = Computer.storage.loadBoard(name)
     Computer.pointer.board = Computer.board
-    Computer.pointer.setParent(Computer.board)
 })
 $('#go').click(() => Computer.board.tick())
 $('#clear').click(() => {
     Computer.board = new Board()
     Computer.pointer.board = Computer.board
-    Computer.pointer.setParent(Computer.board)
 })
 const computeElement = $('#compute')
 computeElement.click(e => Computer.pointer.onClick({ x: e.offsetX, y: e.offsetY }, Computer.context))
@@ -131,8 +131,7 @@ function update() {
     Computer.context.fillRect(0, 0, 720, 720)
 
     // Draw
-    Computer.board.onDraw(Computer.context)
-    Computer.pointer.onDraw(Computer.context)
+    Computer.board.draw(Computer.context)
     
     // Repeat
     requestAnimationFrame(update)

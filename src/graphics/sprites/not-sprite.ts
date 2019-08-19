@@ -15,9 +15,9 @@ export class NotSprite extends ChipSprite {
         const { x, y } = this.position
 
         ctx.beginPath()
-        ctx.moveTo(x - this.scale, y - this.scale)
-        ctx.lineTo(x - this.scale, y + this.scale)
-        ctx.lineTo(this.position.x + this.scale * 4 / 5, this.position.y)
+        ctx.moveTo(x - ChipSprite.kSize, y - ChipSprite.kSize)
+        ctx.lineTo(x - ChipSprite.kSize, y + ChipSprite.kSize)
+        ctx.lineTo(this.position.x + ChipSprite.kSize * 4 / 5, this.position.y)
         ctx.closePath()
     }
 
@@ -33,7 +33,7 @@ export class NotSprite extends ChipSprite {
 
         // DOT
         ctx.beginPath()
-        ctx.arc(this.position.x + 9 * this.scale / 10, this.position.y, this.scale / 10, 0, Math.PI * 2)
+        ctx.arc(this.position.x + 9 * ChipSprite.kSize / 10, this.position.y, ChipSprite.kSize / 10, 0, Math.PI * 2)
         ctx.closePath()
         ctx.stroke()
     }

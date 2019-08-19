@@ -53,11 +53,9 @@ class NullMode implements PointerMode {
 export class Pointer extends Group {
     private _mode: PointerMode
 
-    public board: Board
-    constructor(board: Board) {
+    public _board: Board
+    constructor() {
         super()
-        this.board = board
-        this.setParent(board)
         this._mode = new NullMode()
     }
 
@@ -65,6 +63,15 @@ export class Pointer extends Group {
 
     get mode() {
         return this._mode
+    }
+
+    get board() {
+        return this._board
+    }
+
+    set board(value: Board) {
+        this._board = value
+        this.setParent(value)
     }
 
     setMode(mode: PointerMode): boolean {

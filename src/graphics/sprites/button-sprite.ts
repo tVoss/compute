@@ -12,7 +12,7 @@ export class ButtonSprite extends ChipSprite {
     makeChipBodyPath(ctx: DrawPath): void {
         const { x, y } = this.position
         ctx.beginPath()
-        ctx.arc(x, y, this.scale / 2, 0, Math.PI * 2)
+        ctx.arc(x, y, ChipSprite.kSize / 2, 0, Math.PI * 2)
         ctx.closePath()
     }
 

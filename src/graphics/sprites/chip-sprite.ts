@@ -1,4 +1,4 @@
-import { Orientation } from "../orientation";
+
 import { Entity } from "../entity";
 import { Input } from "../../chips/input";
 import { Output } from "../../chips/output";
@@ -9,10 +9,13 @@ import { Point } from "../../util/point";
 export type DrawPath = CanvasPath & CanvasDrawPath
 
 export abstract class ChipSprite extends Entity {
+    protected static readonly kSize = 25
+    
     private _grid = 5
+    protected _scale = 1
+    protected _board?: Board
 
-    abstract chip: Chip
-
+    abstract readonly chip: Chip
     abstract makeChipBodyPath(ctx: DrawPath): void
     
     get position() {
@@ -23,6 +26,10 @@ export abstract class ChipSprite extends Entity {
         super.position = this.alignToGrid(value)
     }
 
+    set board(value: Board) {
+        this._board = value
+    }
+
     alignToGrid(p: Point): Point {
         const scaled = Point.div(p, this._grid)
         const round = Point.round(scaled)
@@ -31,10 +38,13 @@ export abstract class ChipSprite extends Entity {
 
     onHover() {
         this.scale = 1.1
+        this.updateWires()
     }
 
     onUnhover() {
         this.scale = 1
+        this.updateWires()
+        
     }
 
     getInputPos(input: Input): Point | null {
@@ -46,8 +56,8 @@ export abstract class ChipSprite extends Entity {
             .sort().indexOf(input.id)
 
         const pos = {
-            x: this.position.x - this.scale,
-            y: this.position.y - this.scale + (this.scale * 2 / (count + 1)) * (1 + idx)
+            x: this.position.x - ChipSprite.kSize,
+            y: this.position.y - ChipSprite.kSize + (ChipSprite.kSize * 2 / (count + 1)) * (1 + idx)
         }
         return Point.rotate(pos, this.position, Math.PI / 2 * this.orientation)
     }
@@ -61,13 +71,17 @@ export abstract class ChipSprite extends Entity {
             .sort().indexOf(output.id)
 
         const pos = {
-            x: this.position.x + this.scale,
-            y: this.position.y - this.scale + (this.scale * 2 / (count + 1)) * (1 + idx)
+            x: this.position.x + ChipSprite.kSize,
+            y: this.position.y - ChipSprite.kSize + (ChipSprite.kSize * 2 / (count + 1)) * (1 + idx)
         }
         return Point.rotate(pos, this.position, Math.PI / 2 * this.orientation)
     }
 
-    updateWires(board: Board) {
+    updateWires() {
+        const board = this._board
+        if (!board) {
+            return
+        }
         this.chip.inputs.forEach(i => {
             board.findConnectedWires(i).forEach(ws => ws.updateNodes())
         })

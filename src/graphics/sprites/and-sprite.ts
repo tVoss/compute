@@ -14,11 +14,11 @@ export class AndSprite extends ChipSprite {
         const y = this.position.y
 
         ctx.beginPath()
-        ctx.moveTo(x, y + this.scale)
-        ctx.lineTo(x - this.scale, y + this.scale)
-        ctx.lineTo(x - this.scale, y - this.scale)
-        ctx.lineTo(x, y - this.scale)
-        ctx.arc(x, y, this.scale, Math.PI * 3 / 2, Math.PI / 2)
+        ctx.moveTo(x, y + ChipSprite.kSize)
+        ctx.lineTo(x - ChipSprite.kSize, y + ChipSprite.kSize)
+        ctx.lineTo(x - ChipSprite.kSize, y - ChipSprite.kSize)
+        ctx.lineTo(x, y - ChipSprite.kSize)
+        ctx.arc(x, y, ChipSprite.kSize, Math.PI * 3 / 2, Math.PI / 2)
         ctx.closePath()
     }
 

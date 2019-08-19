@@ -36,7 +36,7 @@ export class WireSprite extends Entity {
             y: inPos.y
         }
 
-        this._nodes = [outPos, next0, next1, inPos]
+        this._nodes = [outPos, next0, next1, inPos].map(p => Point.mul(p, this.board.scale))
     }
 
     onDraw(ctx: CanvasRenderingContext2D): void {
