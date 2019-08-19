@@ -31,12 +31,12 @@ import { Point } from "../util/point";
 
 export class Board extends Group {
     private _tickCount = 0;
-    protected _scale = 1
+    protected _scale = 0.8
     protected _orientation = 0.1
 
     constructor() {
         super()
-        this.position = {x: 0, y: 50}
+        this.position = {x: 75, y: 50}
     }
 
     get wireSprites() {

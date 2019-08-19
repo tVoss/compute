@@ -29,7 +29,7 @@ export class Group extends Entity {
         sorted.forEach(e => e.draw(ctx));
     }
     tryFindEntity(point: Point, ctx: CanvasRenderingContext2D) {
-        const children = this.allChildren;
+        const children = this._children;
         this.transformCtx(ctx)
         let entity: Entity | null = null
         for (let i = 0; i < children.length; i++) {

@@ -14,23 +14,11 @@ export abstract class Entity {
         this._scale = 1;
         this._zIndex = 0;
     }
-    get worldPos(): Point {
-        if (this.parent) {
-            return Point.add(this.parent.worldPos, this.position);
-        }
-        return this.position;
-    }
     get position(): Point {
         return this._position;
     }
     set position(value: Point) {
         this._position = { ...value };
-    }
-    get worldScale(): number {
-        if (this.parent) {
-            return this.parent.worldScale * this.scale
-        }
-        return this.scale
     }
     get scale(): number {
         return this._scale;
@@ -38,20 +26,17 @@ export abstract class Entity {
     set scale(scale: number) {
         this._scale = scale;
     }
-    get worldOrientation(): Orientation {
-        if (this.parent) {
-            return this.parent.worldOrientation + this.orientation
-        }
-        return this.orientation
-    }
     get orientation(): Orientation {
-        return this._orientation
+        return this._orientation;
     }
     rotate(orientation: Orientation) {
         this._orientation = this._orientation + orientation;
     }
     get zIndex(): number {
-        return this._parent ? this._parent.zIndex + this._zIndex : this._zIndex;
+        return this._zIndex;
+    }
+    set zIndex(value: number) {
+        this._zIndex = value;
     }
     get parent() {
         return this._parent;
@@ -69,22 +54,33 @@ export abstract class Entity {
         this._parent = undefined;
         this._position = globalPos;
     }
-    protected abstract onDraw(ctx: CanvasRenderingContext2D): void;
-    protected transformCtx(ctx: CanvasRenderingContext2D) {
-        ctx.save();
-        ctx.translate(this.position.x, this.position.y);
-        ctx.scale(1 * this.scale, 1 * this.scale);
-        ctx.rotate((this._orientation * Math.PI) / 2);
-    }
+
     draw(ctx: CanvasRenderingContext2D) {
         this.transformCtx(ctx);
         this.onDraw(ctx);
         ctx.restore();
     }
+    transformPoint(p: Point) {
+        const translated = Point.sub(p, this.position)
+        const rotated = Point.rotate(
+            translated,
+            Point.zero(),
+            -(this.orientation * Math.PI) / 2
+        );
+        const scaled = Point.div(rotated, this.scale);
+        return scaled;
+    }
+    protected transformCtx(ctx: CanvasRenderingContext2D) {
+        ctx.save();
+        ctx.translate(this.position.x, this.position.y);
+        ctx.scale(this.scale, this.scale);
+        ctx.rotate((this._orientation * Math.PI) / 2);
+    }
+    protected abstract onDraw(ctx: CanvasRenderingContext2D): void;
+
     onHover(ctx: CanvasRenderingContext2D) {}
     onUnhover(ctx: CanvasRenderingContext2D) {}
-    abstract tryFindEntity(
-        point: Point,
-        ctx: CanvasRenderingContext2D
-    ): Entity | null;
+    tryFindEntity(point: Point, ctx: CanvasRenderingContext2D): Entity | null {
+        return null;
+    }
 }

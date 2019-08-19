@@ -17,14 +17,12 @@ export class MoveChipMode implements PointerMode {
         this.chip = chip
         this.oldParent = chip.parent
         this.lastMode = lastMode
-        
-        chip.setParent(this.pointer)
-        chip.position = { x: 0, y: 0 }
+        chip.position = pointer.position
         chip.onHover()
     }
 
     onMove(pos: Point): void {
-        this.chip.updateWires()
+        this.chip.position = this.pointer.position
     }
 
     onClick(point: Point, ctx: CanvasRenderingContext2D): void {

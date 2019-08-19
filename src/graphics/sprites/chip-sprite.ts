@@ -24,6 +24,7 @@ export abstract class ChipSprite extends Entity {
 
     set position(value: Point) {
         super.position = this.alignToGrid(value);
+        this.updateWires()
     }
 
     set board(value: Board) {
@@ -54,16 +55,16 @@ export abstract class ChipSprite extends Entity {
         const idx = [...this.chip.inputs.keys()].sort().indexOf(input.id);
 
         const pos = {
-            x: this.worldPos.x - ChipSprite.kSize * this.scale,
+            x: this.position.x - ChipSprite.kSize * this.scale,
             y:
-                this.worldPos.y -
+                this.position.y -
                 ChipSprite.kSize * this.scale +
                 ((ChipSprite.kSize * this.scale * 2) / (count + 1)) *
                     (1 + idx)
         };
         return Point.rotate(
             pos,
-            this.worldPos,
+            this.position,
             (Math.PI / 2) * this.orientation
         );
     }
@@ -76,16 +77,16 @@ export abstract class ChipSprite extends Entity {
         const idx = [...this.chip.outputs.keys()].sort().indexOf(output.id);
 
         const pos = {
-            x: this.worldPos.x + ChipSprite.kSize,
+            x: this.position.x + ChipSprite.kSize,
             y:
-                this.worldPos.y -
+                this.position.y -
                 ChipSprite.kSize * this.scale +
                 ((ChipSprite.kSize * this.scale * 2) / (count + 1)) *
                     (1 + idx)
         };
         return Point.rotate(
             pos,
-            this.worldPos,
+            this.position,
             (Math.PI / 2) * this.orientation
         );
     }

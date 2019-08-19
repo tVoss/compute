@@ -7,6 +7,7 @@ import { GrabberMode } from './grabber-mode';
 import { StartWireMode } from './start-wire-mode';
 import { RotateMode } from './rotate-mode';
 import { Point } from '../util/point';
+import { Highlight } from "./highlight";
 
 export enum PointerModes {
     Clicker,
@@ -57,6 +58,8 @@ export class Pointer extends Group {
     constructor() {
         super()
         this._mode = new NullMode()
+        new Highlight().setParent(this);
+        new Highlight().setParent(this);
     }
 
     readonly onModeChange: ((mode: PointerModes) => void)[] = []
@@ -74,6 +77,10 @@ export class Pointer extends Group {
         this.setParent(value)
     }
 
+    getBoardPos(p: Point) {
+        return this.board.transformPoint(p)
+    }
+
     setMode(mode: PointerMode): boolean {
         if (!this._mode.canChange) {
             return false
@@ -85,12 +92,8 @@ export class Pointer extends Group {
     }
 
     onMove(point: Point, ctx: CanvasRenderingContext2D) {
+        this.position = this.board.transformPoint(point)
         this.mode.onMove(point, ctx)
-        let newPos = Point.div(point, this.worldScale)
-        if (this.parent) {
-            newPos = Point.rotate(newPos, this.parent.position, -this.parent.orientation)
-        }
-        this.position = newPos
     }
 
     onClick(point: Point, ctx: CanvasRenderingContext2D) {
