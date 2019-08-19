@@ -85,8 +85,12 @@ export class Pointer extends Group {
     }
 
     onMove(point: Point, ctx: CanvasRenderingContext2D) {
-        this._localPosition = Point.div(point, this.board.scale)
         this.mode.onMove(point, ctx)
+        let newPos = Point.div(point, this.worldScale)
+        if (this.parent) {
+            newPos = Point.rotate(newPos, this.parent.position, -this.parent.orientation)
+        }
+        this.position = newPos
     }
 
     onClick(point: Point, ctx: CanvasRenderingContext2D) {

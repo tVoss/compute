@@ -33,8 +33,8 @@ export class MoveChipMode implements PointerMode {
     }
 
     onRemove(): void {
-        this.chip.removeParent()
         this.chip.onUnhover()
+        this.chip.removeParent()
         if (this.oldParent) {
             this.chip.setParent(this.oldParent)
             this.chip.position = Point.div(this.pointer.position, this.pointer.scale)

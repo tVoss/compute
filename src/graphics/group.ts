@@ -23,16 +23,23 @@ export class Group extends Entity {
     }
     onDraw(ctx: CanvasRenderingContext2D) {
         const sorted = this._children.sort((a, b) => a.zIndex - b.zIndex);
+        if (this._logStuff) {
+            console.log('Drawing ' + sorted.length + ' children')
+        }
         sorted.forEach(e => e.draw(ctx));
     }
     tryFindEntity(point: Point, ctx: CanvasRenderingContext2D) {
         const children = this.allChildren;
+        this.transformCtx(ctx)
+        let entity: Entity | null = null
         for (let i = 0; i < children.length; i++) {
             const hit = children[i].tryFindEntity(point, ctx);
             if (hit) {
-                return hit;
+                entity = hit
+                break
             }
         }
-        return null;
+        ctx.restore()
+        return entity
     }
 }

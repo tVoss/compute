@@ -28,7 +28,7 @@ export class RotateMode implements PointerMode {
         if (!chip) {
             return
         }
-        chip.orientation = Orientation.add(chip.orientation, 1)
+        chip.rotate(1 as Orientation)
         chip.updateWires()
     }
     

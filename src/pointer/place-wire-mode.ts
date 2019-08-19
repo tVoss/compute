@@ -59,16 +59,20 @@ export class PlaceWireMode implements PointerMode {
             this.highlight.removeParent()
             return
         }
-        this.highlight.position = port[1]
+        const portPos = this.pointer.board.getPortPos(port)
+        if (!portPos) {
+            this.highlight.removeParent()
+            return
+        }
+        this.highlight.position = portPos
         this.highlight.setParent(this.pointer.board)
     }
 
     onClick(point: Point, ctx: CanvasRenderingContext2D): void {
-        const found = this.pointer.board.tryFindPort(point, 10)
-        if (!found) {
+        const port = this.pointer.board.tryFindPort(point, 10)
+        if (!port) {
             return
         }
-        const port = found[0]
 
         // Stop wire on self click
         if (this.wire.port === port) {

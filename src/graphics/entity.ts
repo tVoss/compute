@@ -1,52 +1,57 @@
-import { Point } from '../util/point';
+import { Point } from "../util/point";
 import { Orientation } from "./orientation";
 import { Group } from "./group";
 
 export abstract class Entity {
     protected _parent?: Group;
-    protected _localPosition: Point;
+    protected _position: Point;
     protected _scale: number;
     protected _zIndex: number;
     protected _orientation: Orientation = Orientation.Right;
+    protected _logStuff = false;
     constructor() {
-        this._localPosition = { x: 0, y: 0 };
+        this._position = { x: 0, y: 0 };
         this._scale = 1;
         this._zIndex = 0;
     }
-    get position(): Point {
-        if (!this._parent) {
-            return this._localPosition;
+    get worldPos(): Point {
+        if (this.parent) {
+            return Point.add(this.parent.worldPos, this.position);
         }
-        return {
-            x: this._localPosition.x * this._parent.scale + this._parent.position.x,
-            y: this._localPosition.y * this._parent.scale + this._parent.position.y
-        };
+        return this.position;
+    }
+    get position(): Point {
+        return this._position;
     }
     set position(value: Point) {
-        this._localPosition.x = value.x;
-        this._localPosition.y = value.y;
+        this._position = { ...value };
     }
-    get orientation(): Orientation {
-        if (!this.parent) {
-            return this._orientation;
+    get worldScale(): number {
+        if (this.parent) {
+            return this.parent.worldScale * this.scale
         }
-        return Orientation.add(this.parent.orientation, this._orientation);
-    }
-    set orientation(orientation: Orientation) {
-        this._orientation = orientation;
-    }
-    get zIndex(): number {
-        return this._parent
-            ? this._parent.zIndex + this._zIndex
-            : this._zIndex;
+        return this.scale
     }
     get scale(): number {
-        return this._parent
-            ? this._parent._scale * this._scale
-            : this._scale;
+        return this._scale;
     }
     set scale(scale: number) {
         this._scale = scale;
+    }
+    get worldOrientation(): Orientation {
+        if (this.parent) {
+            return this.parent.worldOrientation + this.orientation
+        }
+        return this.orientation
+    }
+    get orientation(): Orientation {
+        return this._orientation
+    }
+    rotate(orientation: Orientation) {
+        this._orientation = this._orientation + orientation;
+    }
+    get zIndex(): number {
+        return this._parent ? this._parent.zIndex + this._zIndex : this._zIndex;
     }
     get parent() {
         return this._parent;
@@ -62,19 +67,24 @@ export abstract class Entity {
         const globalPos = this.position;
         this._parent && this._parent.removeChild(this);
         this._parent = undefined;
-        this._localPosition = globalPos;
+        this._position = globalPos;
     }
     protected abstract onDraw(ctx: CanvasRenderingContext2D): void;
-    draw(ctx: CanvasRenderingContext2D) {
+    protected transformCtx(ctx: CanvasRenderingContext2D) {
         ctx.save();
         ctx.translate(this.position.x, this.position.y);
-        ctx.scale(1 * this.scale, 1 * this.scale)
-        ctx.rotate(this._orientation * Math.PI / 2);
-        ctx.translate(-this.position.x, -this.position.y);
+        ctx.scale(1 * this.scale, 1 * this.scale);
+        ctx.rotate((this._orientation * Math.PI) / 2);
+    }
+    draw(ctx: CanvasRenderingContext2D) {
+        this.transformCtx(ctx);
         this.onDraw(ctx);
         ctx.restore();
     }
-    onHover(ctx: CanvasRenderingContext2D) { }
-    onUnhover(ctx: CanvasRenderingContext2D) { }
-    abstract tryFindEntity(point: Point, ctx: CanvasRenderingContext2D): Entity | null;
+    onHover(ctx: CanvasRenderingContext2D) {}
+    onUnhover(ctx: CanvasRenderingContext2D) {}
+    abstract tryFindEntity(
+        point: Point,
+        ctx: CanvasRenderingContext2D
+    ): Entity | null;
 }

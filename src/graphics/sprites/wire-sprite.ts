@@ -36,10 +36,11 @@ export class WireSprite extends Entity {
             y: inPos.y
         }
 
-        this._nodes = [outPos, next0, next1, inPos].map(p => Point.mul(p, this.board.scale))
+        this._nodes = [outPos, next0, next1, inPos]
     }
 
     onDraw(ctx: CanvasRenderingContext2D): void {
+        ctx.restore()
         ctx.strokeStyle = Signal.getColor(this.wire._nextSignal)
         ctx.lineWidth = 2
 
@@ -54,6 +55,7 @@ export class WireSprite extends Entity {
             ctx.lineTo(this._nodes[i].x, this._nodes[i].y)
         }
         ctx.stroke()
+        this.transformCtx(ctx)
     }
 
     tryFindEntity(point: Point, ctx: CanvasRenderingContext2D): Entity | null {

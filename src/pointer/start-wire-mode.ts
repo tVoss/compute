@@ -19,7 +19,12 @@ export class StartWireMode implements PointerMode {
             this.highlight.removeParent()
             return
         }
-        this.highlight.position = port[1]
+        const portPos = this.pointer.board.getPortPos(port)
+        if (!portPos) {
+            this.highlight.removeParent()
+            return
+        }
+        this.highlight.position = portPos
         this.highlight.setParent(this.pointer.board)
     }
 
@@ -28,8 +33,12 @@ export class StartWireMode implements PointerMode {
         if (!port) {
             return
         }
+        const portPos = this.pointer.board.getPortPos(port);
+        if (!portPos) {
+            return
+        }
         this.highlight.removeParent()
-        const placeWire = new PlaceWireMode(this.pointer, port[0])
+        const placeWire = new PlaceWireMode(this.pointer, port)
         this.pointer.setMode(placeWire)
     }
 

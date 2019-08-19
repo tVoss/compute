@@ -1,32 +1,40 @@
-import { ChipSprite, DrawPath } from './chip-sprite'
-import { Chip } from '../../chips/chip';
-import { OrGate } from '../../chips/gates'
+import { ChipSprite, DrawPath } from "./chip-sprite";
+import { Chip } from "../../chips/chip";
+import { OrGate } from "../../chips/gates";
 
 export class OrSprite extends ChipSprite {
-    readonly chip: Chip;    
-    
+    readonly chip: Chip;
+
     constructor(chip: OrGate) {
-        super()
-        this.chip = chip
+        super();
+        this.chip = chip;
     }
 
     makeChipBodyPath(ctx: DrawPath) {
-        const { x, y } = this.position
-
-        ctx.beginPath()
-        ctx.moveTo(x - ChipSprite.kSize, y + ChipSprite.kSize)
-        ctx.quadraticCurveTo(x, y + ChipSprite.kSize, this.position.x + ChipSprite.kSize, this.position.y)
-        ctx.quadraticCurveTo(x, y - ChipSprite.kSize, x - ChipSprite.kSize, y - ChipSprite.kSize)
-        ctx.quadraticCurveTo(x - ChipSprite.kSize / 2, y, x-ChipSprite.kSize, y + ChipSprite.kSize)
-        ctx.closePath()
+        ctx.beginPath();
+        ctx.moveTo(-ChipSprite.kSize, ChipSprite.kSize);
+        ctx.quadraticCurveTo(0, ChipSprite.kSize, ChipSprite.kSize, 0);
+        ctx.quadraticCurveTo(
+            0,
+            -ChipSprite.kSize,
+            -ChipSprite.kSize,
+            -ChipSprite.kSize
+        );
+        ctx.quadraticCurveTo(
+            -ChipSprite.kSize / 2,
+            0,
+            -ChipSprite.kSize,
+            ChipSprite.kSize
+        );
+        ctx.closePath();
     }
 
     onDraw(ctx: CanvasRenderingContext2D) {
-        ctx.strokeStyle = '#eeeeee'
-        ctx.lineWidth = 3
+        ctx.strokeStyle = "#eeeeee";
+        ctx.lineWidth = 3;
 
         // Body
-        this.makeChipBodyPath(ctx)
-        ctx.stroke()
+        this.makeChipBodyPath(ctx);
+        ctx.stroke();
     }
 }
