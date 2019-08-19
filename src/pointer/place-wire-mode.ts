@@ -8,10 +8,9 @@ import { Highlight } from "./highlight";
 import { Point } from "../util/point";
 
 class HeldWire extends Entity {
-
     port: Port
     start: Point
-
+    parent: Pointer
     constructor(port: Port, start: Point) {
         super()
         this.port = port
@@ -21,9 +20,11 @@ class HeldWire extends Entity {
     onDraw(ctx: CanvasRenderingContext2D): void {
         ctx.strokeStyle = 'cyan'
         ctx.lineWidth = 2
+        
+        const portPos = Point.sub(this.start, this.parent.position)
 
         ctx.beginPath()
-        ctx.moveTo(this.start.x, this.start.y)
+        ctx.moveTo(portPos.x, portPos.y)
         ctx.lineTo(this.position.x, this.position.y)
         ctx.closePath()
         ctx.stroke()

@@ -8,7 +8,7 @@ export class Highlight extends Entity {
     onDraw(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = 'yellow'
         ctx.beginPath()
-        ctx.arc(this.position.x, this.position.y, this._size, 0, Math.PI * 2)
+        ctx.arc(0, 0, this._size, 0, Math.PI * 2)
         ctx.closePath()
         ctx.fill()
     }    

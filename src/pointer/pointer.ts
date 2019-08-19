@@ -58,8 +58,7 @@ export class Pointer extends Group {
     constructor() {
         super()
         this._mode = new NullMode()
-        new Highlight().setParent(this);
-        new Highlight().setParent(this);
+        this.zIndex = 10
     }
 
     readonly onModeChange: ((mode: PointerModes) => void)[] = []
