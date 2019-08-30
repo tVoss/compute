@@ -16,8 +16,8 @@ export class NorSprite extends ChipSprite {
         ctx.quadraticCurveTo(
             0,
             ChipSprite.kSize,
-            this.position.x + (ChipSprite.kSize * 4) / 5,
-            this.position.y
+            (ChipSprite.kSize * 4) / 5,
+            0
         );
         ctx.quadraticCurveTo(
             0,

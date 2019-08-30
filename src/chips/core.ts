@@ -16,7 +16,7 @@ export class Wire {
     readonly id: string
     public input: Input
     public output: Output
-
+    
     _nextSignal: Signal = false
 
     constructor(id: string, output: Output, input: Input) {
@@ -26,9 +26,10 @@ export class Wire {
     }
 
     read(): void {
-        if (this.output) {
-            this._nextSignal = this.output.get()
+        if (!this.output) {
+            return
         }
+        this._nextSignal = this.output.get()
     }
 
     write(): void {
