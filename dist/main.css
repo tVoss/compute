@@ -1,19 +1,24 @@
-body {
+html {
     width: 100%;
     height: 100%;
-    display: flex
 }
 
-#compute {
-    width: 720px;
-    height: 720px;
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
 }
 
-.fill {
-    flex: 1;
-    display: flex
+#compute-canvas {
+    position: fixed;
+    width: 100%;
+    height: 100%;
 }
 
-.column {
-    flex-direction: column
+#compute-controls {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    display: flex;
 }

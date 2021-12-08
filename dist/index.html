@@ -1,36 +1,15 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+    <head>
+        <title>Compute</title>
+        <link rel="stylesheet" href="main.css" />
+    </head>
 
-<head>
-    <title>Compute</title>
-    <link rel="stylesheet" href="main.css">
-</head>
-
-<body>
-    <canvas id="compute" width="720" height="720"></canvas>
-    <div id="controls" class="fill column">
-        <form id="global" class="fill column">
-            <div id="modes" class="fill column"></div>
-            <div>
-                <label for="auto">Auto Tick</label>
-                <input type="checkbox" name="auto" id="auto">
-            </div>
-            <div>
-                <label for="speed">Tick Speed</label>
-                <input type="range" min="1" max="60" name="speed" id="speed" value="1">
-            </div>
-            <div id="chips" class="fill column"></div>
-        </form>
-        <div id="utility" class="fill">
-            <div>
-                <button id="go">go</button>
-                <button id="save">save</button>
-                <button id="load">load</button>
-                <button id="clear">clear</button>
-            </div>
+    <body>
+        <canvas id="compute-canvas"></canvas>
+        <div id="compute-controls">
+            <button>ello</button>
         </div>
-    </div>
-    <script src="./bundle.js"></script>
-</body>
-
+        <script src="./bundle.js"></script>
+    </body>
 </html>

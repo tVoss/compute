@@ -28,13 +28,4 @@ export class OrSprite extends ChipSprite {
         );
         ctx.closePath();
     }
-
-    onDraw(ctx: CanvasRenderingContext2D) {
-        ctx.strokeStyle = "#eeeeee";
-        ctx.lineWidth = 3;
-
-        // Body
-        this.makeChipBodyPath(ctx);
-        ctx.stroke();
-    }
 }

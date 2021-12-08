@@ -18,13 +18,4 @@ export class AndSprite extends ChipSprite {
         ctx.arc(0, 0, ChipSprite.kSize, (Math.PI * 3) / 2, Math.PI / 2);
         ctx.closePath();
     }
-
-    onDraw(ctx: CanvasRenderingContext2D) {
-        ctx.strokeStyle = "#eeeeee";
-        ctx.lineWidth = 3;
-
-        // Body
-        this.makeChipBodyPath(ctx);
-        ctx.stroke();
-    }
 }
