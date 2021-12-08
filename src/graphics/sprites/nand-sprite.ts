@@ -26,12 +26,7 @@ export class NandSprite extends ChipSprite {
     }
 
     onDraw(ctx: CanvasRenderingContext2D) {
-        ctx.strokeStyle = "#eeeeee";
-        ctx.lineWidth = 3;
-
-        // Body
-        this.makeChipBodyPath(ctx);
-        ctx.stroke();
+        super.onDraw(ctx);
 
         // DOT
         ctx.beginPath();
@@ -43,6 +38,7 @@ export class NandSprite extends ChipSprite {
             Math.PI * 2
         );
         ctx.closePath();
+        ctx.fill();
         ctx.stroke();
     }
 }

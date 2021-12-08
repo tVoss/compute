@@ -13,24 +13,14 @@ export class NotSprite extends ChipSprite {
 
     makeChipBodyPath(ctx: DrawPath) {
         ctx.beginPath();
-        ctx.moveTo(-ChipSprite.kSize,- ChipSprite.kSize);
-        ctx.lineTo(- ChipSprite.kSize, ChipSprite.kSize);
-        ctx.lineTo(
-            (ChipSprite.kSize * 4) / 5,
-            0
-        );
+        ctx.moveTo(-ChipSprite.kSize, -ChipSprite.kSize);
+        ctx.lineTo(-ChipSprite.kSize, ChipSprite.kSize);
+        ctx.lineTo((ChipSprite.kSize * 4) / 5, 0);
         ctx.closePath();
     }
 
     onDraw(ctx: CanvasRenderingContext2D) {
-        const x = this.position.x;
-        const y = this.position.y;
-        ctx.strokeStyle = "#eeeeee";
-        ctx.lineWidth = 3;
-
-        // Body
-        this.makeChipBodyPath(ctx);
-        ctx.stroke();
+        super.onDraw(ctx);
 
         // DOT
         ctx.beginPath();
@@ -42,6 +32,7 @@ export class NotSprite extends ChipSprite {
             Math.PI * 2
         );
         ctx.closePath();
+        ctx.fill();
         ctx.stroke();
     }
 }

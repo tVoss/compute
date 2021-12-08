@@ -24,7 +24,7 @@ export abstract class ChipSprite extends Entity {
 
     set position(value: Point) {
         super.position = this.alignToGrid(value);
-        this.updateWires()
+        this.updateWires();
     }
 
     set board(value: Board) {
@@ -47,6 +47,17 @@ export abstract class ChipSprite extends Entity {
         this.updateWires();
     }
 
+    onDraw(ctx: CanvasRenderingContext2D) {
+        ctx.strokeStyle = "#eeeeee";
+        ctx.fillStyle = "#111111";
+        ctx.lineWidth = 3;
+
+        // Body
+        this.makeChipBodyPath(ctx);
+        ctx.fill();
+        ctx.stroke();
+    }
+
     getInputPos(input: Input): Point | null {
         if (!this.chip.inputs.has(input.id)) {
             return null;
@@ -59,8 +70,7 @@ export abstract class ChipSprite extends Entity {
             y:
                 this.position.y -
                 ChipSprite.kSize * this.scale +
-                ((ChipSprite.kSize * this.scale * 2) / (count + 1)) *
-                    (1 + idx)
+                ((ChipSprite.kSize * this.scale * 2) / (count + 1)) * (1 + idx)
         };
         return Point.rotate(
             pos,
@@ -81,8 +91,7 @@ export abstract class ChipSprite extends Entity {
             y:
                 this.position.y -
                 ChipSprite.kSize * this.scale +
-                ((ChipSprite.kSize * this.scale * 2) / (count + 1)) *
-                    (1 + idx)
+                ((ChipSprite.kSize * this.scale * 2) / (count + 1)) * (1 + idx)
         };
         return Point.rotate(
             pos,

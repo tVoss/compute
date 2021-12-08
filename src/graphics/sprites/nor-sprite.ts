@@ -35,12 +35,7 @@ export class NorSprite extends ChipSprite {
     }
 
     onDraw(ctx: CanvasRenderingContext2D) {
-        ctx.strokeStyle = "#eeeeee";
-        ctx.lineWidth = 3;
-
-        // Body
-        this.makeChipBodyPath(ctx);
-        ctx.stroke();
+        super.onDraw(ctx);
 
         // DOT
         ctx.beginPath();
@@ -52,6 +47,7 @@ export class NorSprite extends ChipSprite {
             Math.PI * 2
         );
         ctx.closePath();
+        ctx.fill();
         ctx.stroke();
     }
 }

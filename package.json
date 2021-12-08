@@ -4,7 +4,7 @@
   "description": "We make things think",
   "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack -w"
   },
   "author": "Tyler Voss <tVoss42@gmail.com>",
   "license": "MIT",

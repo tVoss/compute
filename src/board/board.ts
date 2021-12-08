@@ -31,9 +31,10 @@ import { Point } from "../util/point";
 
 export class Board extends Group {
     private _tickCount = 0;
+    private _dimensions: Point = { x: 1000, y: 500 };
 
     constructor() {
-        super()
+        super();
     }
 
     get wireSprites() {
@@ -111,6 +112,41 @@ export class Board extends Group {
 
         this._tickCount++;
     };
+
+    draw(ctx: CanvasRenderingContext2D) {
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "white";
+        ctx.strokeRect(0, 0, this._dimensions.x, this._dimensions.y);
+        for (let i = 0; i < this._dimensions.x; i += 10) {
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(i, 0);
+            ctx.lineTo(i, this._dimensions.y);
+            ctx.stroke();
+            if (i % 50 === 0) {
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, this._dimensions.y);
+                ctx.stroke();
+            }
+        }
+        for (let i = 0; i < this._dimensions.y; i += 10) {
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(0, i);
+            ctx.lineTo(this._dimensions.x, i);
+            ctx.stroke();
+            if (i % 50 === 0) {
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(this._dimensions.x, i);
+                ctx.stroke();
+            }
+        }
+        super.draw(ctx);
+    }
 
     tryFindPort(point: Point, radius: number): Port | null {
         for (const chip of this.chipSprites.values()) {

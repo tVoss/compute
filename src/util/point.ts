@@ -8,6 +8,10 @@ export namespace Point {
         return { x: 0, y: 0 };
     }
 
+    export function copy(p: Point): Point {
+        return { x: p.x, y: p.y };
+    }
+
     export function dist(a: Point, b: Point): number {
         return Math.sqrt(dist2(a, b));
     }
